@@ -1,0 +1,32 @@
+﻿{
+  "name": "startupforge",
+  "version": "1.0.0",
+  "description": "A full-stack web application by Sojib Ahmed",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "build": "react-scripts build",
+    "test": "jest --coverage",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write src/"
+  },
+  "keywords": [
+    "nodejs",
+    "react",
+    "mongodb",
+    "express",
+    "fullstack"
+  ],
+  "author": "Sojib Ahmed <sojibahmedshorif25@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sojibahmedshorif25-ai/startupforge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sojibahmedshorif25-ai/startupforge/issues"
+  },
+  "homepage": "https://github.com/sojibahmedshorif25-ai/startupforge#readme"
+}
