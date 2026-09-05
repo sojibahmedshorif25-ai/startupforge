@@ -1,205 +1,132 @@
-# StartupForge — Startup Team Builder Platform
+<div align="center">
 
-A platform where startup founders can publish startup ideas, build teams, and recruit collaborators. Developers, designers, marketers, and other professionals can explore startup opportunities and apply to join teams.
+# 🚀 StartupForge — Startup Team Builder
 
-## Features
+### *Build Your Dream Team, Launch Your Vision*
 
-### Authentication (Better Auth)
-- Login/Register with email & password
-- Google Login support
-- JWT stored in HTTPOnly cookies
-- Role-based access: Founder, Collaborator, Admin
+![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Node.js](https://img.shields.io/badge/Node.js-20-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-8-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Stripe](https://img.shields.io/badge/Stripe-Payments-635BFF?style=for-the-badge&logo=stripe&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-### Founder Dashboard
-- Create and manage startup profile
-- Post opportunities (limited to 3 free, premium required for more)
-- Review and manage applications
-- Accept/reject applicants
-- Buy premium via Stripe ($19.99)
+</div>
 
-### Collaborator Dashboard
-- Browse and search opportunities
-- Apply to opportunities
-- Track application status
-- Update personal profile
+---
 
-### Admin Dashboard
-- Overview stats (users, startups, opportunities, revenue)
-- Manage users (block/unblock)
-- Manage startups (approve/remove)
-- View transactions
+## 📖 Overview
 
-### Public Pages
-- Home with featured startups & opportunities
-- Browse startups with industry filter
-- Browse opportunities with search & filters
-- Startup details page
-- Custom 404 page
+**StartupForge** is a full-stack platform connecting founders with collaborators. Founders can publish startup ideas and recruit team members, while collaborators can explore opportunities, apply, and build their portfolios. Features Stripe payment integration and an admin dashboard.
 
-### Technical Features
-- Framer Motion animations
-- Responsive design (mobile, tablet, desktop)
-- Server-side pagination
-- MongoDB $regex search & $in filtering
-- Stripe Checkout integration
-- imgBB image upload
-- Recharts for dashboard charts
+---
 
-## Tech Stack
+## ✨ Key Features
 
-**Frontend:** React 18, Vite, Tailwind CSS, React Router, Framer Motion, Recharts, React Hot Toast
+| Feature | Description |
+|---------|-------------|
+| 👤 **Role-Based Auth** | Founder, Collaborator, Admin roles |
+| 💡 **Startup Publishing** | Founders post ideas with details |
+| 🤝 **Team Building** | Recruit collaborators for projects |
+| 🔍 **Opportunity Browsing** | Explore available opportunities |
+| 📝 **Application System** | Apply to startups |
+| 💳 **Stripe Payments** | $19.99 premium subscription |
+| 📊 **Admin Dashboard** | Analytics with Recharts |
+| 🖼️ **Image Upload** | ImgBB integration |
+| 📄 **Pagination** | Efficient data loading |
 
-**Backend:** Node.js, Express, MongoDB (Mongoose), JWT, Stripe, bcryptjs
+---
 
-## Setup
-
-### Prerequisites
-- Node.js 18+
-- MongoDB connection string
-- Stripe account (for payments)
-- imgBB API key (for image uploads)
-
-### Server Setup
-
-```bash
-cd server
-npm install
-```
-
-Create `server/.env`:
-```
-PORT=5000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-BETTER_AUTH_SECRET=your_better_auth_secret
-BETTER_AUTH_URL=http://localhost:5173
-STRIPE_SECRET_KEY=your_stripe_secret_key
-CLIENT_URL=http://localhost:5173
-NODE_ENV=development
-```
-
-Run server:
-```bash
-npm run dev
-```
-
-### Client Setup
-
-```bash
-cd client
-npm install
-```
-
-Create `client/.env`:
-```
-VITE_IMGBB_KEY=your_imgbb_api_key
-```
-
-Run client:
-```bash
-npm run dev
-```
-
-### Create Admin Account
-Run the seed script:
-```bash
-cd server
-npm run seed
-```
-This creates: **admin@startupforge.com** / **Admin123!**
-
-Or manually in MongoDB:
-```javascript
-db.users.updateOne({ email: "admin@example.com" }, { $set: { role: "admin" } })
-```
-
-## Deployment
-
-### Server
-- Deploy to Render, Railway, or Vercel
-- Set environment variables
-- Ensure CORS is configured with your client URL
+## 🛠️ Tech Stack
 
 ### Client
-- Build: `npm run build`
-- Deploy to Vercel, Netlify, or similar
-- Configure client-side routing (no 404 on refresh)
 
-## Submission Info
+| Technology | Purpose |
+|------------|---------|
+| **React 18** | UI library |
+| **Vite 5** | Build tool |
+| **React Router 6** | Client-side routing |
+| **Tailwind CSS 3** | Styling |
+| **Axios** | HTTP client |
+| **Framer Motion** | Animations |
+| **Recharts** | Charts |
+| **React Hot Toast** | Notifications |
 
-- **Admin Email:** admin@startupforge.com
-- **Admin Password:** Admin123!
-- **Server GitHub Repo:** https://github.com/YOUR_USERNAME/startup-forge-server
-- **Client GitHub Repo:** https://github.com/YOUR_USERNAME/startup-forge-client
-- **Live Site:** https://your-app.vercel.app
+### Server
 
-## API Endpoints
+| Technology | Purpose |
+|------------|---------|
+| **Node.js + Express** | HTTP framework |
+| **MongoDB + Mongoose** | Database & ODM |
+| **Better Auth** | Authentication |
+| **JWT + bcryptjs** | Token-based auth |
+| **Stripe SDK** | Payment processing |
+| **ImgBB** | Image hosting |
 
-### Auth
-- `POST /api/auth/register` - Register
-- `POST /api/auth/login` - Login
-- `POST /api/auth/logout` - Logout
-- `GET /api/auth/me` - Get current user
+---
 
-### Startups
-- `GET /api/startups/featured` - Featured startups
-- `GET /api/startups/all` - All startups (paginated, filterable)
-- `GET /api/startups/:id` - Startup by ID
-- `POST /api/startups` - Create startup (founder)
-- `PUT /api/startups/:id` - Update startup (founder)
-- `DELETE /api/startups/:id` - Delete startup (founder)
-
-### Opportunities
-- `GET /api/opportunities/featured` - Featured opportunities
-- `GET /api/opportunities/all` - All opportunities (paginated, searchable, filterable)
-- `GET /api/opportunities/:id` - Opportunity by ID
-- `POST /api/opportunities` - Create opportunity (founder)
-- `PUT /api/opportunities/:id` - Update opportunity (founder)
-- `DELETE /api/opportunities/:id` - Delete opportunity (founder)
-
-### Applications
-- `POST /api/applications` - Apply (collaborator)
-- `GET /api/applications/my` - My applications (collaborator)
-- `GET /api/applications/founder` - Applications for founder's opportunities
-- `PUT /api/applications/:id` - Update status (founder)
-
-### Payments
-- `POST /api/payments/create-checkout` - Stripe checkout session
-- `GET /api/payments/success` - Payment success handler
-
-### Admin
-- `GET /api/admin/stats` - Dashboard stats
-- `GET /api/admin/users` - All users
-- `PUT /api/admin/users/:id/toggle-block` - Block/unblock user
-
-### Users
-- `PUT /api/users/profile` - Update profile
-- `GET /api/users/founder-stats` - Founder stats
-- `GET /api/users/collaborator-stats` - Collaborator stats
-
-## Project Structure
+## 📁 Project Structure
 
 ```
-startup-forge/
-├── client/               # React frontend
+startupforge/
+├── client/                          # 🎨 React Frontend
 │   ├── src/
-│   │   ├── components/   # Reusable components
-│   │   ├── pages/        # Page components
-│   │   │   ├── public/    # Public pages
-│   │   │   └── dashboard/ # Dashboard pages
-│   │   ├── context/      # Auth context
-│   │   ├── lib/          # API client
-│   │   ├── App.jsx       # Routes
-│   │   └── main.jsx      # Entry point
-│   ├── index.html
-│   ├── vite.config.js
-│   └── tailwind.config.js
-├── server/               # Express backend
-│   ├── models/           # Mongoose models
-│   ├── controllers/      # Route controllers
-│   ├── routes/           # Express routes
-│   ├── middleware/        # Auth middleware
-│   ├── config/           # DB & Stripe config
-│   └── index.js          # Server entry
+│   │   ├── components/              # Reusable UI components
+│   │   ├── pages/                   # Route pages
+│   │   ├── context/                 # Auth context
+│   │   ├── hooks/                   # Custom hooks
+│   │   ├── services/                # API services
+│   │   └── utils/                   # Utilities
+│   ├── package.json
+│   └── vite.config.js
+│
+├── server/                          # ⚙️ Express Backend
+│   ├── routes/                      # API routes
+│   ├── middleware/                   # Auth middleware
+│   ├── models/                      # Mongoose schemas
+│   ├── controllers/                 # Route handlers
+│   ├── config/                      # DB config
+│   ├── utils/                       # Helpers
+│   ├── seed.js                      # Database seeder
+│   └── index.js                     # Entry point
+│
 └── README.md
 ```
+
+---
+
+## 🚀 Getting Started
+
+```bash
+# Clone
+git clone https://github.com/sojibahmedshorif25-ai/startupforge.git
+
+# Install Client
+cd client && npm install
+
+# Install Server
+cd ../server && npm install
+
+# Configure .env
+cp .env.example .env
+
+# Run
+cd client && npm run dev
+cd server && npm run dev
+```
+
+---
+
+## 👨‍💻 Author
+
+**Sojib Ahmed**
+
+[![GitHub](https://img.shields.io/badge/GitHub-sojibahmedshorif25--ai-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sojibahmedshorif25-ai)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Sojib_Ahmed-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sojib-ahmed-shorif)
+
+---
+
+<div align="center">
+
+**⭐ Star this repo if you find it impressive!**
+
+</div>
