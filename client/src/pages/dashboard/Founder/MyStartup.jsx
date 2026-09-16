@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import api from '../../../lib/axios';
 import toast from 'react-hot-toast';
-import { FiEdit2, FiTrash2, FiSave, FiX, FiCamera, FiDollarSign } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiSave, FiX, FiCamera, FiDollarSign, FiZap, FiCheckCircle } from 'react-icons/fi';
 
 export default function MyStartup() {
+  const navigate = useNavigate();
   const [startup, setStartup] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
@@ -34,7 +36,7 @@ export default function MyStartup() {
     try {
       const { data } = await api.post('/startups', form);
       setStartup(data); setEditing(false);
-      toast.success('Startup created successfully!');
+      toast.success('Startup profile created!');
     } catch (err) { toast.error(err.response?.data?.message || 'Failed'); }
   };
 
@@ -48,7 +50,7 @@ export default function MyStartup() {
   };
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete your startup? This action cannot be undone.')) return;
+    if (!confirm('Are you sure you want to delete your startup?')) return;
     try {
       await api.delete(`/startups/${startup._id}`);
       setStartup(null); setForm({ startup_name: '', logo: '', industry: '', description: '', funding_stage: '', team_size_needed: 1 });
@@ -56,44 +58,38 @@ export default function MyStartup() {
     } catch { toast.error('Failed to delete'); }
   };
 
-  const handleBuyPremium = async () => {
-    try {
-      const { data } = await api.post('/payments/create-checkout');
-      if (data.url) window.location.href = data.url;
-    } catch { toast.error('Payment failed'); }
-  };
-
   if (loading) return <div className="flex justify-center py-20"><div className="loader loader-lg"></div></div>;
 
-  const industries = ['Technology', 'Healthcare', 'Finance', 'Education', 'E-commerce', 'AI', 'Blockchain', 'Other'];
-  const fundingStages = ['Pre-seed', 'Seed', 'Series A', 'Series B', 'Series C', 'Growth'];
+  const industries = ['AI & Data Science', 'HealthTech', 'ClimateTech', 'FinTech', 'EdTech', 'Cybersecurity', 'Robotics & Automation', 'SaaS & DevOps', 'AgriTech', 'Logistics', 'Real Estate Tech'];
+  const fundingStages = ['Pre-Seed ($400K)', 'Seed ($1.5M)', 'Series A ($4.2M)', 'Series B ($10M+)', 'Growth'];
 
   const FormFields = ({ onSubmit, buttonText }) => (
-    <form onSubmit={onSubmit} className="space-y-5">
-      <div className="flex items-center gap-4 mb-6">
-        <div className="relative">
-          <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center overflow-hidden border-2 border-dashed border-gray-300">
-            {form.logo ? <img src={form.logo} alt="logo" className="w-full h-full object-contain" />
-              : <span className="text-3xl font-bold text-gray-300">{form.startup_name?.charAt(0) || '?'}</span>}
+    <form onSubmit={onSubmit} className="space-y-6">
+      <div className="flex items-center gap-5 p-4 rounded-2xl bg-slate-950 border border-slate-800">
+        <div className="relative shrink-0">
+          <div className="w-20 h-20 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center overflow-hidden">
+            {form.logo ? <img src={form.logo} alt="logo" className="w-full h-full object-cover" />
+              : <span className="text-3xl font-black text-[#a855f7]">{form.startup_name?.charAt(0) || '?'}</span>}
           </div>
-          <label className="absolute -bottom-1 -right-1 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-700 shadow-lg">
-            <FiCamera className="text-white" size={14} />
+          <label className="absolute -bottom-1 -right-1 w-7 h-7 bg-purple-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-purple-700 shadow-lg">
+            <FiCamera className="text-white" size={12} />
             <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
           </label>
         </div>
         <div>
-          <p className="font-medium text-gray-900">Startup Logo</p>
-          <p className="text-sm text-gray-500">Upload your logo image</p>
+          <p className="font-extrabold text-white text-sm">Startup Logo & Cover Image</p>
+          <p className="text-xs text-slate-400">Upload high-res branding image</p>
         </div>
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1.5">Startup Name</label>
+          <label className="block text-xs font-extrabold text-slate-300 mb-1.5 uppercase tracking-wider">Startup Name</label>
           <input type="text" required value={form.startup_name}
-            onChange={(e) => setForm({ ...form, startup_name: e.target.value })} className="input-field" placeholder="e.g., TechFlow" />
+            onChange={(e) => setForm({ ...form, startup_name: e.target.value })} className="input-field" placeholder="e.g., NexusAI Synthetics" />
         </div>
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1.5">Industry</label>
+          <label className="block text-xs font-extrabold text-slate-300 mb-1.5 uppercase tracking-wider">Industry Sector</label>
           <select required value={form.industry}
             onChange={(e) => setForm({ ...form, industry: e.target.value })} className="input-field">
             <option value="">Select industry</option>
@@ -101,27 +97,30 @@ export default function MyStartup() {
           </select>
         </div>
       </div>
+
       <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Description</label>
+        <label className="block text-xs font-extrabold text-slate-300 mb-1.5 uppercase tracking-wider">Venture Description</label>
         <textarea required value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })} rows={4} className="input-field" placeholder="Tell us about your startup..." />
+          onChange={(e) => setForm({ ...form, description: e.target.value })} rows={4} className="input-field" placeholder="Describe your startup mission..." />
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1.5">Funding Stage</label>
+          <label className="block text-xs font-extrabold text-slate-300 mb-1.5 uppercase tracking-wider">Funding Stage</label>
           <select required value={form.funding_stage}
             onChange={(e) => setForm({ ...form, funding_stage: e.target.value })} className="input-field">
-            <option value="">Select stage</option>
+            <option value="">Select funding stage</option>
             {fundingStages.map(fs => <option key={fs} value={fs}>{fs}</option>)}
           </select>
         </div>
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1.5">Team Size Needed</label>
+          <label className="block text-xs font-extrabold text-slate-300 mb-1.5 uppercase tracking-wider">Team Roles Needed</label>
           <input type="number" min="1" value={form.team_size_needed}
             onChange={(e) => setForm({ ...form, team_size_needed: Number(e.target.value) })} className="input-field" />
         </div>
       </div>
-      <button type="submit" className="btn-primary flex items-center">
+
+      <button type="submit" className="btn-primary w-full py-4 font-extrabold text-base">
         <FiSave className="mr-2" /> {buttonText}
       </button>
     </form>
@@ -129,34 +128,38 @@ export default function MyStartup() {
 
   if (!startup) {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        <h1 className="text-3xl font-extrabold mb-2">Create Your Startup</h1>
-        <p className="text-gray-500 mb-8">Set up your startup profile to start hiring</p>
-        <div className="card p-8 max-w-2xl">
-          <FormFields onSubmit={handleCreate} buttonText="Create Startup" />
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-3xl mx-auto">
+        <h1 className="text-3xl font-black mb-2 text-white">Create Startup Profile</h1>
+        <p className="text-slate-400 mb-8">Set up your venture profile to post open positions</p>
+        <div className="p-8 rounded-3xl bg-[#12131e] border border-[#212338] shadow-2xl">
+          <FormFields onSubmit={handleCreate} buttonText="Create Startup Profile" />
         </div>
       </motion.div>
     );
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-[#12131e] border border-[#212338] shadow-2xl">
         <div>
-          <h1 className="text-3xl font-extrabold">My Startup</h1>
-          <p className="text-gray-500 mt-1">Manage your startup profile</p>
+          <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 text-xs font-black uppercase tracking-wider mb-2">
+            <FiCheckCircle /> Verified Founder Profile
+          </span>
+          <h1 className="text-3xl font-black text-white">{startup.startup_name}</h1>
+          <p className="text-slate-400 text-sm">Manage venture profile and funding information</p>
         </div>
-        <div className="flex gap-2">
-          <button onClick={handleBuyPremium} className="btn-secondary flex items-center text-sm">
-            <FiDollarSign className="mr-1.5" /> Premium $19.99
+
+        <div className="flex flex-wrap gap-2">
+          <button onClick={() => navigate('/pricing')} className="btn-ai text-xs py-3 px-5 font-bold">
+            <FiDollarSign /> Upgrade Pro
           </button>
           {!editing && (
             <>
-              <button onClick={() => setEditing(true)} className="btn-primary flex items-center text-sm">
-                <FiEdit2 className="mr-1.5" /> Edit
+              <button onClick={() => setEditing(true)} className="btn-secondary py-2.5 px-4 text-xs font-bold">
+                <FiEdit2 /> Edit Profile
               </button>
-              <button onClick={handleDelete} className="btn-danger flex items-center text-sm">
-                <FiTrash2 className="mr-1.5" /> Delete
+              <button onClick={handleDelete} className="btn-danger text-xs py-2.5 px-4 font-bold">
+                <FiTrash2 /> Delete
               </button>
             </>
           )}
@@ -164,42 +167,48 @@ export default function MyStartup() {
       </div>
 
       {editing ? (
-        <div className="card p-8 max-w-2xl">
+        <div className="p-8 rounded-3xl bg-[#12131e] border border-[#212338] shadow-2xl max-w-3xl">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold">Edit Startup</h2>
-            <button onClick={() => setEditing(false)} className="text-gray-400 hover:text-gray-600"><FiX size={20} /></button>
+            <h2 className="text-xl font-bold text-white">Edit Startup Profile</h2>
+            <button onClick={() => setEditing(false)} className="text-slate-400 hover:text-white"><FiX size={20} /></button>
           </div>
-          <FormFields onSubmit={handleUpdate} buttonText="Update Startup" />
+          <FormFields onSubmit={handleUpdate} buttonText="Save Startup Updates" />
         </div>
       ) : (
-        <div className="card overflow-hidden">
-          <div className="h-48 md:h-56 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 flex items-center justify-center relative">
-            {startup.logo ? (
-              <img src={startup.logo} alt={startup.startup_name} className="h-28 w-28 object-contain" />
-            ) : (
-              <span className="text-7xl font-extrabold text-white/80">{startup.startup_name?.charAt(0)}</span>
-            )}
-            <div className={`absolute top-4 right-4 px-3 py-1.5 rounded-full text-xs font-bold ${
-              startup.status === 'approved' ? 'bg-emerald-500 text-white' : 'bg-amber-500 text-white'
-            }`}>
-              {startup.status === 'approved' ? 'Approved' : 'Pending Approval'}
+        <div className="rounded-3xl bg-[#12131e] border border-[#212338] shadow-2xl overflow-hidden">
+          <div className="h-64 relative bg-slate-950">
+            <img src={startup.logo} alt={startup.startup_name} className="w-full h-full object-cover opacity-90" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#12131e] via-[#12131e]/50 to-transparent"></div>
+            
+            <div className="absolute top-4 right-4 px-3.5 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider shadow-lg bg-emerald-950/80 text-emerald-400 border border-emerald-500/30">
+              {startup.status === 'approved' ? '✓ Verified Active' : 'Pending Review'}
+            </div>
+
+            <div className="absolute bottom-6 left-6 right-6 z-10 flex items-end justify-between">
+              <div>
+                <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs font-black border border-purple-500/30 mb-2 inline-block">
+                  {startup.industry}
+                </span>
+                <h2 className="text-3xl font-black text-white">{startup.startup_name}</h2>
+              </div>
+              <span className="px-3.5 py-1.5 bg-indigo-950/80 text-indigo-300 border border-indigo-500/30 rounded-full text-xs font-black">
+                {startup.funding_stage}
+              </span>
             </div>
           </div>
+
           <div className="p-8">
-            <h2 className="text-2xl font-bold mb-1">{startup.startup_name}</h2>
-            <div className="flex gap-2 mb-6">
-              <span className="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium">{startup.industry}</span>
-              <span className="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-sm font-medium">{startup.funding_stage}</span>
-            </div>
-            <p className="text-gray-600 leading-relaxed mb-6">{startup.description}</p>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="bg-gray-50 rounded-xl p-4">
-                <p className="text-gray-500">Team Size Needed</p>
-                <p className="text-xl font-bold text-gray-900">{startup.team_size_needed}</p>
+            <h3 className="text-lg font-bold text-white mb-2">Venture Description</h3>
+            <p className="text-slate-300 leading-relaxed text-sm mb-8">{startup.description}</p>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800">
+                <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">Team Roles Open</p>
+                <p className="text-2xl font-black text-white mt-1">{startup.team_size_needed} Members Needed</p>
               </div>
-              <div className="bg-gray-50 rounded-xl p-4">
-                <p className="text-gray-500">Status</p>
-                <p className="text-xl font-bold text-gray-900 capitalize">{startup.status}</p>
+              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800">
+                <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">Platform Status</p>
+                <p className="text-2xl font-black text-emerald-400 mt-1 capitalize">{startup.status}</p>
               </div>
             </div>
           </div>
