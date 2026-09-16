@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,20 +8,20 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-    @apply bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100;
+    @apply bg-slate-950 text-slate-100 transition-colors duration-300;
   }
   html { scroll-behavior: smooth; }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white px-6 py-3 rounded-xl font-semibold
-    hover:from-blue-700 hover:via-indigo-700 hover:to-violet-700 transition-all duration-300 shadow-lg shadow-indigo-500/25
-    hover:shadow-indigo-500/40 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2;
+    @apply bg-gradient-to-r from-purple-600 via-indigo-600 to-violet-600 text-white px-6 py-3 rounded-2xl font-bold
+    hover:from-purple-700 hover:via-indigo-700 hover:to-violet-700 transition-all duration-300 shadow-lg shadow-purple-600/30
+    hover:shadow-purple-600/50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2;
   }
   .btn-secondary {
-    @apply bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 px-6 py-3 rounded-xl font-semibold border border-slate-200 dark:border-slate-800
-    hover:border-indigo-500 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2;
+    @apply bg-slate-900 text-slate-200 px-6 py-3 rounded-2xl font-bold border border-slate-800
+    hover:border-purple-500 hover:text-purple-400 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2;
   }
   .btn-danger {
     @apply bg-gradient-to-r from-rose-500 to-red-600 text-white px-4 py-2 rounded-xl font-medium
@@ -32,36 +32,36 @@
     hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 shadow-md shadow-emerald-500/25 active:scale-95;
   }
   .btn-ai {
-    @apply bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold
-    hover:from-purple-700 hover:via-pink-700 hover:to-indigo-700 transition-all duration-300 shadow-lg shadow-purple-500/30
-    hover:shadow-purple-500/50 active:scale-95 flex items-center gap-2;
+    @apply bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 text-white px-5 py-2.5 rounded-2xl font-extrabold
+    hover:from-purple-700 hover:via-pink-700 hover:to-indigo-700 transition-all duration-300 shadow-lg shadow-purple-500/40
+    hover:shadow-purple-500/60 active:scale-95 flex items-center gap-2;
   }
   .input-field {
-    @apply w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-slate-100
-    focus:border-indigo-500 dark:focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all duration-300 placeholder:text-slate-400;
+    @apply w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-2xl text-slate-100
+    focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 outline-none transition-all duration-300 placeholder:text-slate-500;
   }
   .card {
-    @apply bg-white dark:bg-slate-900 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800/80
-    transition-all duration-300;
+    @apply bg-slate-900/90 rounded-3xl shadow-2xl border border-slate-800/80
+    transition-all duration-300 backdrop-blur-xl;
   }
   .card-hover {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/10 dark:hover:border-indigo-500/40;
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-purple-500/20 hover:border-purple-500/40;
   }
   .section-title {
-    @apply text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight;
+    @apply text-3xl md:text-5xl font-black text-white tracking-tight;
   }
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-indigo-300 to-pink-400;
   }
   .glass-card {
-    @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/20 dark:border-slate-800/50 shadow-xl;
+    @apply bg-slate-900/80 backdrop-blur-2xl border border-slate-800 shadow-2xl;
   }
 }
 
 @layer utilities {
   .loader {
-    border: 3px solid rgba(99, 102, 241, 0.15);
-    border-top-color: #6366f1;
+    border: 3px solid rgba(168, 85, 247, 0.2);
+    border-top-color: #a855f7;
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -71,6 +71,9 @@
     width: 56px;
     height: 56px;
     border-width: 4px;
+  }
+  .purple-glow {
+    box-shadow: 0 0 35px -5px rgba(168, 85, 247, 0.3);
   }
 }
 
@@ -89,6 +92,5 @@
 
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-.dark ::-webkit-scrollbar-thumb { background: #334155; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #64748b; }
