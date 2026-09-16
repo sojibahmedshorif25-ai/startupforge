@@ -144,7 +144,7 @@ export default function BrowseOpportunities() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
+    <div className="max-w-[1600px] mx-auto px-6 lg:px-12 py-12">
       {/* Header Banner */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 text-center max-w-3xl mx-auto">
         <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 text-xs font-extrabold uppercase tracking-wider mb-4">
@@ -229,7 +229,7 @@ export default function BrowseOpportunities() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {opportunities.map((opp, i) => (
               <motion.div
                 key={opp._id}

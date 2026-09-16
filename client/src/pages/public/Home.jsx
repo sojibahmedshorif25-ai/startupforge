@@ -27,7 +27,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.15),transparent_50%)]"></div>
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none"></div>
         
-        <div className="max-w-7xl mx-auto px-4 relative z-10">
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-12 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -80,7 +80,7 @@ export default function Home() {
 
       {/* Live Metrics Grid */}
       <section className="py-12 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               { value: '15+', label: 'Active Seeded Startups' },
@@ -99,7 +99,7 @@ export default function Home() {
 
       {/* 3 AI Features Showcase */}
       <section className="py-24 bg-slate-950 text-white relative">
-        <div className="max-w-7xl mx-auto px-4 relative z-10">
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-12 relative z-10">
           <motion.div {...fadeUp} className="text-center max-w-3xl mx-auto mb-16">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 text-xs font-extrabold uppercase tracking-wider mb-4">
               <FiZap /> Powered by Gemini AI Engine
@@ -164,7 +164,7 @@ export default function Home() {
 
       {/* Featured Startups Grid */}
       <section className="py-24 bg-slate-50 dark:bg-slate-950">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
           <motion.div {...fadeUp} className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
             <div>
               <span className="text-xs font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">Handpicked Ventures</span>
