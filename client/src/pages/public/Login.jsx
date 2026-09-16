@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
-import { FiMail, FiLock, FiArrowRight, FiEye, FiEyeOff, FiCopy } from 'react-icons/fi';
+import { FiMail, FiLock, FiArrowRight, FiEye, FiEyeOff, FiZap, FiShield, FiUsers, FiBriefcase } from 'react-icons/fi';
 
 export default function Login() {
   const { login } = useAuth();
@@ -15,102 +15,201 @@ export default function Login() {
   const [showPwd, setShowPwd] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!form.email || !form.password) return toast.error('Please fill all fields');
     setLoading(true);
     try {
       await login(form.email, form.password);
-      toast.success('Welcome back!');
+      toast.success('Welcome back to StartupForge!');
       navigate(from, { replace: true });
     } catch (err) {
       const msg = err.response?.data?.message || 'Invalid email or password';
       toast.error(msg);
-      if (msg.includes('Invalid')) {
-        toast('Try: admin@startupforge.com / Admin123!', { icon: '💡', duration: 5000 });
-      }
     } finally {
       setLoading(false);
     }
   };
 
-  const fillDemo = (type) => {
+  const fillDemoAndLogin = async (type) => {
+    let email = '';
+    let password = '';
     if (type === 'admin') {
-      setForm({ email: 'admin@startupforge.com', password: 'Admin123!' });
+      email = 'admin@startupforge.com';
+      password = 'Admin123!';
     } else if (type === 'founder') {
-      setForm({ email: 'founder@test.com', password: 'Founder123' });
+      email = 'alex.founder@techvision.io';
+      password = 'Founder123!';
     } else {
-      setForm({ email: 'collab@test.com', password: 'Collab123' });
+      email = 'dev.john@gmail.com';
+      password = 'User123!';
+    }
+    setForm({ email, password });
+    setLoading(true);
+    try {
+      await login(email, password);
+      toast.success(`Logged in as ${type.toUpperCase()}!`);
+      navigate(from, { replace: true });
+    } catch (err) {
+      toast.error('Quick login failed.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-[90vh] flex items-center justify-center bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 py-12 px-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4 }}
-        className="bg-white p-8 md:p-10 rounded-3xl shadow-2xl shadow-gray-200/60 w-full max-w-md border border-gray-100"
-      >
-        <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-600/25">
-            <span className="text-white font-extrabold text-2xl">S</span>
-          </div>
-          <h2 className="text-3xl font-extrabold text-gray-900">Welcome Back</h2>
-          <p className="text-gray-500 mt-2">Sign in to your StartupForge account</p>
-        </div>
+    <div className="min-h-[90vh] flex items-center justify-center py-12 px-4 relative overflow-hidden bg-slate-950 text-white">
+      {/* Glow Orbs */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] pointer-events-none"></div>
 
-        <div className="bg-blue-50 border border-blue-100 rounded-2xl p-3 mb-6">
-          <p className="text-xs font-semibold text-blue-700 mb-2 text-center">⚡ Quick Login</p>
-          <div className="flex gap-2 justify-center">
-            <button type="button" onClick={() => fillDemo('admin')}
-              className="px-3 py-1.5 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition-all font-medium">Admin</button>
-            <button type="button" onClick={() => fillDemo('founder')}
-              className="px-3 py-1.5 bg-white text-blue-600 border border-blue-200 text-xs rounded-lg hover:bg-blue-50 transition-all font-medium">Founder</button>
-            <button type="button" onClick={() => fillDemo('collab')}
-              className="px-3 py-1.5 bg-white text-blue-600 border border-blue-200 text-xs rounded-lg hover:bg-blue-50 transition-all font-medium">Collaborator</button>
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+        {/* Left Side Branding Card */}
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="lg:col-span-6 p-8 lg:p-12 rounded-3xl bg-slate-900/80 border border-slate-800 backdrop-blur-xl shadow-2xl flex flex-col justify-between h-full"
+        >
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
-            <div className="relative">
-              <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-              <input type="email" required value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="input-field pl-11" placeholder="you@example.com" />
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-extrabold uppercase tracking-wider mb-6">
+              <FiZap /> 1-Click Recruiter Demo Mode
+            </div>
+            <h1 className="text-4xl lg:text-5xl font-black tracking-tight mb-4 leading-tight">
+              Welcome to <br />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400">
+                StartupForge
+              </span>
+            </h1>
+            <p className="text-slate-400 text-base leading-relaxed mb-8">
+              The premier AI-driven ecosystem connecting high-impact founders with elite co-builders.
+            </p>
+
+            <div className="space-y-4">
+              {[
+                { icon: FiShield, title: 'Role-Based Dashboards', desc: 'Custom portals for Admin, Founders, and Collaborators.' },
+                { icon: FiZap, title: '3 Gemini AI Integrations', desc: 'AI Pitches, Skill Match Scores, and Profile Bio Generation.' },
+                { icon: FiUsers, title: 'Verified Startup Community', desc: '15+ venture-backed startup roles open for collaboration.' },
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-3.5 p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800/80">
+                  <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 shrink-0">
+                    <item.icon size={18} />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-slate-200">{item.title}</h4>
+                    <p className="text-xs text-slate-400">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
-            <div className="relative">
-              <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-              <input type={showPwd ? 'text' : 'password'} required value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="input-field pl-11 pr-11" placeholder="Enter your password" />
-              <button type="button" onClick={() => setShowPwd(!showPwd)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
-                {showPwd ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+
+          <div className="mt-8 pt-6 border-t border-slate-800 text-xs text-slate-500 flex items-center justify-between">
+            <span>© 2026 StartupForge AI Inc.</span>
+            <span className="text-indigo-400 font-semibold">Production Ready</span>
+          </div>
+        </motion.div>
+
+        {/* Right Side Form Card */}
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="lg:col-span-6 bg-slate-900 border border-slate-800 p-8 md:p-10 rounded-3xl shadow-2xl shadow-indigo-950/50 backdrop-blur-2xl"
+        >
+          <div className="mb-6">
+            <h2 className="text-3xl font-extrabold text-white mb-2">Sign In</h2>
+            <p className="text-slate-400 text-sm">Enter your credentials or click a demo account below</p>
+          </div>
+
+          {/* Quick Demo Login Buttons */}
+          <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 mb-6">
+            <p className="text-xs font-extrabold text-indigo-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <FiZap className="text-amber-400" /> Instant Demo Login (Click to Sign In):
+            </p>
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => fillDemoAndLogin('admin')}
+                className="py-2 px-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-extrabold shadow-md transition-all active:scale-95 text-center"
+              >
+                Admin
+              </button>
+              <button
+                type="button"
+                onClick={() => fillDemoAndLogin('founder')}
+                className="py-2 px-2 bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-extrabold transition-all active:scale-95 text-center"
+              >
+                Founder
+              </button>
+              <button
+                type="button"
+                onClick={() => fillDemoAndLogin('collaborator')}
+                className="py-2 px-2 bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-extrabold transition-all active:scale-95 text-center"
+              >
+                Collaborator
               </button>
             </div>
           </div>
-          <button type="submit" disabled={loading}
-            className="btn-primary w-full flex items-center justify-center py-3.5">
-            {loading ? (
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-            ) : (
-              <>Sign In <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" /></>
-            )}
-          </button>
-        </form>
 
-        <p className="text-center mt-6 text-gray-500 text-sm">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-blue-600 font-semibold hover:text-blue-700 hover:underline">
-            Create one
-          </Link>
-        </p>
-      </motion.div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs font-extrabold text-slate-300 mb-1.5 uppercase tracking-wider">Email Address</label>
+              <div className="relative">
+                <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <input
+                  type="email"
+                  required
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  className="input-field pl-11 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500"
+                  placeholder="you@example.com"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-extrabold text-slate-300 mb-1.5 uppercase tracking-wider">Password</label>
+              <div className="relative">
+                <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <input
+                  type={showPwd ? 'text' : 'password'}
+                  required
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  className="input-field pl-11 pr-11 bg-slate-950 border-slate-800 text-white placeholder:text-slate-500"
+                  placeholder="••••••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPwd(!showPwd)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                >
+                  {showPwd ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary w-full py-4 text-base font-extrabold mt-2 shadow-xl shadow-indigo-600/30"
+            >
+              {loading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  Sign In <FiArrowRight className="ml-2" />
+                </>
+              )}
+            </button>
+          </form>
+
+          <p className="text-center mt-6 text-slate-400 text-sm">
+            Don't have an account?{' '}
+            <Link to="/register" className="text-indigo-400 font-bold hover:underline">
+              Create free account
+            </Link>
+          </p>
+        </motion.div>
+      </div>
     </div>
   );
 }
