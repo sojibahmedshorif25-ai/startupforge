@@ -21,7 +21,7 @@ const parseJSON = (text) => {
  * Helper to safely generate content across Gemini model versions
  */
 const generateWithFallback = async (prompt) => {
-  const modelsToTry = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.5-flash'];
+  const modelsToTry = ['gemini-1.5-flash', 'gemini-2.0-flash'];
   for (const modelName of modelsToTry) {
     try {
       const response = await ai.models.generateContent({
