@@ -9,6 +9,48 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Dark/Light Theme state
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('theme') === 'dark';
+  });
+
+  // Bookmarks state
+  const [bookmarks, setBookmarks] = useState(() => {
+    const saved = localStorage.getItem('startup_bookmarks');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // Notifications state
+  const [notifications, setNotifications] = useState([
+    { id: 1, text: 'Welcome to StartupForge! Explore startup teams today.', read: false, date: 'Just now' },
+    { id: 2, text: 'Tip: Complete your profile skills to boost AI matching accuracy.', read: false, date: '5m ago' },
+  ]);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [darkMode]);
+
+  const toggleTheme = () => setDarkMode((prev) => !prev);
+
+  const toggleBookmark = (startupId) => {
+    setBookmarks((prev) => {
+      const exists = prev.includes(startupId);
+      const updated = exists ? prev.filter((id) => id !== startupId) : [...prev, startupId];
+      localStorage.setItem('startup_bookmarks', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const markNotificationsRead = () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  };
+
   const checkAuth = useCallback(async () => {
     try {
       const { data } = await api.get('/auth/me');
@@ -48,7 +90,23 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, setUser, checkAuth }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        login,
+        register,
+        logout,
+        setUser,
+        checkAuth,
+        darkMode,
+        toggleTheme,
+        bookmarks,
+        toggleBookmark,
+        notifications,
+        markNotificationsRead,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -5,6 +5,7 @@ import { verifyToken, authorizeRoles } from '../middleware/auth.js';
 const router = Router();
 
 router.post('/create-checkout', verifyToken, authorizeRoles('founder'), createCheckoutSession);
+router.post('/create-checkout-session', verifyToken, authorizeRoles('founder'), createCheckoutSession);
 router.get('/success', verifyToken, paymentSuccess);
 router.get('/all', verifyToken, authorizeRoles('admin'), getAllPayments);
 

@@ -1,20 +1,21 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { HiMenu, HiX } from 'react-icons/hi';
+import { HiMenu, HiX, HiSun, HiMoon, HiBell, HiBookmark } from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const navLinks = [
   { to: '/', label: 'Home' },
-  { to: '/startups', label: 'Startups' },
-  { to: '/opportunities', label: 'Opportunities' },
+  { to: '/startups', label: 'Browse Startups' },
+  { to: '/opportunities', label: 'Browse Opportunities' },
 ];
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, logout, darkMode, toggleTheme, notifications, markNotificationsRead, bookmarks } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  const [showNotifs, setShowNotifs] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -32,27 +33,30 @@ export default function Navbar() {
   };
 
   const isActive = (path) => location.pathname === path;
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <nav className="bg-white/80 backdrop-blur-lg border-b border-gray-100 sticky top-0 z-50">
+    <nav className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-100 dark:border-slate-800 sticky top-0 z-50 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
-          <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:shadow-blue-500/40 transition-shadow">
-              <span className="text-white font-extrabold text-lg">S</span>
+          <Link to="/" className="flex items-center space-x-3 group">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/25 group-hover:shadow-indigo-500/40 transition-all duration-300">
+              <span className="text-white font-extrabold text-xl">S</span>
             </div>
-            <span className="text-xl font-extrabold text-gray-900">Startup<span className="text-blue-600">Forge</span></span>
+            <span className="text-xl font-extrabold text-slate-900 dark:text-white">
+              Startup<span className="gradient-text">Forge</span>
+            </span>
           </Link>
 
           <div className="hidden md:flex items-center space-x-1">
-            {navLinks.map(link => (
+            {navLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
-                className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
+                className={`px-4 py-2 rounded-xl font-semibold transition-all duration-200 ${
                   isActive(link.to)
-                    ? 'bg-blue-50 text-blue-600'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400'
+                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 {link.label}
@@ -61,43 +65,124 @@ export default function Navbar() {
           </div>
 
           <div className="hidden md:flex items-center space-x-3">
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+              title="Toggle Light/Dark Theme"
+            >
+              {darkMode ? <HiSun size={20} className="text-amber-400" /> : <HiMoon size={20} />}
+            </button>
+
+            {/* Notifications Dropdown */}
+            {user && (
+              <div className="relative">
+                <button
+                  onClick={() => {
+                    setShowNotifs(!showNotifs);
+                    if (!showNotifs) markNotificationsRead();
+                  }}
+                  className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors relative"
+                  title="Notifications"
+                >
+                  <HiBell size={20} />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full animate-ping" />
+                  )}
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full" />
+                  )}
+                </button>
+
+                <AnimatePresence>
+                  {showNotifs && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute right-0 mt-3 w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 p-4 z-50"
+                    >
+                      <div className="flex items-center justify-between mb-3 border-b border-slate-100 dark:border-slate-800 pb-2">
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm">Notifications</h4>
+                        <span className="text-xs text-indigo-600 dark:text-indigo-400">Activity Alerts</span>
+                      </div>
+                      <div className="space-y-3 max-h-60 overflow-y-auto">
+                        {notifications.map((n) => (
+                          <div key={n.id} className="text-xs p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                            <p className="text-slate-800 dark:text-slate-200 font-medium">{n.text}</p>
+                            <span className="text-[10px] text-slate-400 mt-1 block">{n.date}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+
             {user ? (
               <>
-                <Link to={getDashboardLink()}
-                  className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
-                    isActive(getDashboardLink()) ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'
-                  }`}>
+                <Link
+                  to={getDashboardLink()}
+                  className={`px-4 py-2 rounded-xl font-semibold transition-all duration-200 ${
+                    isActive(getDashboardLink())
+                      ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
                   Dashboard
                 </Link>
-                <Link to="/dashboard/profile"
-                  className="flex items-center space-x-2 px-3 py-2 rounded-xl bg-gray-50 hover:bg-gray-100 transition-all">
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shadow-sm">
-                    {user.name?.charAt(0)?.toUpperCase()}
-                  </div>
-                  <span className="text-sm font-medium text-gray-700">{user.name?.split(' ')[0]}</span>
+
+                <Link
+                  to="/dashboard/profile"
+                  className="flex items-center space-x-2 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                >
+                  {user.image ? (
+                    <img src={user.image} alt={user.name} className="w-7 h-7 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold">
+                      {user.name?.charAt(0)?.toUpperCase()}
+                    </div>
+                  )}
+                  <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">{user.name?.split(' ')[0]}</span>
                 </Link>
-                <button onClick={handleLogout}
-                  className="px-5 py-2.5 bg-gradient-to-r from-red-500 to-rose-500 text-white rounded-xl font-medium hover:from-red-600 hover:to-rose-600 transition-all duration-300 shadow-lg shadow-red-500/25 text-sm">
+
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-semibold transition-all duration-200 shadow-md shadow-rose-500/20 text-sm"
+                >
                   Logout
                 </button>
               </>
             ) : (
               <>
-                <Link to="/login"
-                  className="px-5 py-2.5 text-gray-700 font-medium hover:text-blue-600 transition-colors">
+                <Link
+                  to="/login"
+                  className="px-4 py-2 text-slate-700 dark:text-slate-300 font-semibold hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                >
                   Login
                 </Link>
-                <Link to="/register"
-                  className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg shadow-blue-500/25">
+                <Link to="/register" className="btn-primary text-sm px-5 py-2.5">
                   Get Started
                 </Link>
               </>
             )}
           </div>
 
-          <button className="md:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors" onClick={() => setOpen(!open)}>
-            {open ? <HiX size={24} /> : <HiMenu size={24} />}
-          </button>
+          <div className="flex md:hidden items-center space-x-2">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
+            >
+              {darkMode ? <HiSun size={20} className="text-amber-400" /> : <HiMoon size={20} />}
+            </button>
+            <button
+              className="p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <HiX size={24} /> : <HiMenu size={24} />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -107,31 +192,66 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-gray-100 bg-white overflow-hidden"
+            className="md:hidden border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden"
           >
             <div className="px-4 py-4 space-y-2">
-              {navLinks.map(link => (
-                <Link key={link.to} to={link.to} onClick={() => setOpen(false)}
-                  className={`block px-4 py-3 rounded-xl font-medium ${
-                    isActive(link.to) ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'
-                  }`}>{link.label}</Link>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={() => setOpen(false)}
+                  className={`block px-4 py-3 rounded-xl font-semibold ${
+                    isActive(link.to)
+                      ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  {link.label}
+                </Link>
               ))}
-              <hr className="my-2 border-gray-100" />
+              <hr className="my-2 border-slate-100 dark:border-slate-800" />
               {user ? (
                 <>
-                  <Link to={getDashboardLink()} onClick={() => setOpen(false)}
-                    className="block px-4 py-3 rounded-xl font-medium text-gray-600 hover:bg-gray-50">Dashboard</Link>
-                  <Link to="/dashboard/profile" onClick={() => setOpen(false)}
-                    className="block px-4 py-3 rounded-xl font-medium text-gray-600 hover:bg-gray-50">Profile</Link>
-                  <button onClick={() => { handleLogout(); setOpen(false); }}
-                    className="w-full text-left px-4 py-3 rounded-xl font-medium text-red-600 hover:bg-red-50">Logout</button>
+                  <Link
+                    to={getDashboardLink()}
+                    onClick={() => setOpen(false)}
+                    className="block px-4 py-3 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/dashboard/profile"
+                    onClick={() => setOpen(false)}
+                    className="block px-4 py-3 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-3 rounded-xl font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+                  >
+                    Logout
+                  </button>
                 </>
               ) : (
                 <>
-                  <Link to="/login" onClick={() => setOpen(false)}
-                    className="block px-4 py-3 rounded-xl font-medium text-gray-600 hover:bg-gray-50">Login</Link>
-                  <Link to="/register" onClick={() => setOpen(false)}
-                    className="block px-4 py-3 rounded-xl font-medium text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white">Get Started</Link>
+                  <Link
+                    to="/login"
+                    onClick={() => setOpen(false)}
+                    className="block px-4 py-3 rounded-xl font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/register"
+                    onClick={() => setOpen(false)}
+                    className="block px-4 py-3 rounded-xl font-semibold text-center btn-primary"
+                  >
+                    Get Started
+                  </Link>
                 </>
               )}
             </div>

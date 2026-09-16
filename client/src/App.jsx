@@ -36,7 +36,9 @@ const PrivateRoute = ({ children, roles }) => {
 const PublicLayout = ({ children }) => (
   <>
     <Navbar />
-    <main className="min-h-screen bg-gray-50">{children}</main>
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+      {children}
+    </main>
     <Footer />
   </>
 );
@@ -45,12 +47,10 @@ const DashboardLayout = ({ children, allowedRoles }) => {
   const { user } = useAuth();
   if (allowedRoles && !allowedRoles.includes(user?.role)) return <Navigate to="/" />;
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
       <Sidebar />
       <div className="flex-1 md:ml-64 pb-16 md:pb-0">
-        <div className="p-4 md:p-8 max-w-7xl mx-auto">
-          {children}
-        </div>
+        <div className="p-4 md:p-8 max-w-7xl mx-auto">{children}</div>
       </div>
     </div>
   );
@@ -71,70 +71,111 @@ export default function App() {
       <Route path="/payment/success" element={<PublicLayout><PaymentSuccess /></PublicLayout>} />
       <Route path="/payment/cancel" element={<PublicLayout><Home /></PublicLayout>} />
 
-      <Route path="/dashboard/founder" element={
-        <PrivateRoute roles={['founder']}>
-          <DashboardLayout allowedRoles={['founder']}><FounderOverview /></DashboardLayout>
-        </PrivateRoute>
-      } />
-      <Route path="/dashboard/founder/my-startup" element={
-        <PrivateRoute roles={['founder']}>
-          <DashboardLayout allowedRoles={['founder']}><MyStartup /></DashboardLayout>
-        </PrivateRoute>
-      } />
-      <Route path="/dashboard/founder/add-opportunity" element={
-        <PrivateRoute roles={['founder']}>
-          <DashboardLayout allowedRoles={['founder']}><AddOpportunity /></DashboardLayout>
-        </PrivateRoute>
-      } />
-      <Route path="/dashboard/founder/manage-opportunities" element={
-        <PrivateRoute roles={['founder']}>
-          <DashboardLayout allowedRoles={['founder']}><ManageOpportunities /></DashboardLayout>
-        </PrivateRoute>
-      } />
-      <Route path="/dashboard/founder/applications" element={
-        <PrivateRoute roles={['founder']}>
-          <DashboardLayout allowedRoles={['founder']}><Applications /></DashboardLayout>
-        </PrivateRoute>
-      } />
+      {/* Founder Dashboard Routes */}
+      <Route
+        path="/dashboard/founder"
+        element={
+          <PrivateRoute roles={['founder']}>
+            <DashboardLayout allowedRoles={['founder']}><FounderOverview /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/founder/my-startup"
+        element={
+          <PrivateRoute roles={['founder']}>
+            <DashboardLayout allowedRoles={['founder']}><MyStartup /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/founder/add-opportunity"
+        element={
+          <PrivateRoute roles={['founder']}>
+            <DashboardLayout allowedRoles={['founder']}><AddOpportunity /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/founder/manage-opportunities"
+        element={
+          <PrivateRoute roles={['founder']}>
+            <DashboardLayout allowedRoles={['founder']}><ManageOpportunities /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/founder/applications"
+        element={
+          <PrivateRoute roles={['founder']}>
+            <DashboardLayout allowedRoles={['founder']}><Applications /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
 
-      <Route path="/dashboard/collaborator" element={
-        <PrivateRoute roles={['collaborator']}>
-          <DashboardLayout allowedRoles={['collaborator']}><CollaboratorOverview /></DashboardLayout>
-        </PrivateRoute>
-      } />
-      <Route path="/dashboard/collaborator/applications" element={
-        <PrivateRoute roles={['collaborator']}>
-          <DashboardLayout allowedRoles={['collaborator']}><MyApplications /></DashboardLayout>
-        </PrivateRoute>
-      } />
+      {/* Collaborator Dashboard Routes */}
+      <Route
+        path="/dashboard/collaborator"
+        element={
+          <PrivateRoute roles={['collaborator']}>
+            <DashboardLayout allowedRoles={['collaborator']}><CollaboratorOverview /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/collaborator/applications"
+        element={
+          <PrivateRoute roles={['collaborator']}>
+            <DashboardLayout allowedRoles={['collaborator']}><MyApplications /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
 
-      <Route path="/dashboard/profile" element={
-        <PrivateRoute roles={['founder', 'collaborator', 'admin']}>
-          <DashboardLayout allowedRoles={['founder', 'collaborator', 'admin']}><Profile /></DashboardLayout>
-        </PrivateRoute>
-      } />
+      {/* Shared User Profile */}
+      <Route
+        path="/dashboard/profile"
+        element={
+          <PrivateRoute roles={['founder', 'collaborator', 'admin']}>
+            <DashboardLayout allowedRoles={['founder', 'collaborator', 'admin']}><Profile /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
 
-      <Route path="/dashboard/admin" element={
-        <PrivateRoute roles={['admin']}>
-          <DashboardLayout allowedRoles={['admin']}><AdminOverview /></DashboardLayout>
-        </PrivateRoute>
-      } />
-      <Route path="/dashboard/admin/users" element={
-        <PrivateRoute roles={['admin']}>
-          <DashboardLayout allowedRoles={['admin']}><ManageUsers /></DashboardLayout>
-        </PrivateRoute>
-      } />
-      <Route path="/dashboard/admin/startups" element={
-        <PrivateRoute roles={['admin']}>
-          <DashboardLayout allowedRoles={['admin']}><ManageStartups /></DashboardLayout>
-        </PrivateRoute>
-      } />
-      <Route path="/dashboard/admin/transactions" element={
-        <PrivateRoute roles={['admin']}>
-          <DashboardLayout allowedRoles={['admin']}><Transactions /></DashboardLayout>
-        </PrivateRoute>
-      } />
+      {/* Admin Dashboard Routes */}
+      <Route
+        path="/dashboard/admin"
+        element={
+          <PrivateRoute roles={['admin']}>
+            <DashboardLayout allowedRoles={['admin']}><AdminOverview /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/admin/users"
+        element={
+          <PrivateRoute roles={['admin']}>
+            <DashboardLayout allowedRoles={['admin']}><ManageUsers /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/admin/startups"
+        element={
+          <PrivateRoute roles={['admin']}>
+            <DashboardLayout allowedRoles={['admin']}><ManageStartups /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/admin/transactions"
+        element={
+          <PrivateRoute roles={['admin']}>
+            <DashboardLayout allowedRoles={['admin']}><Transactions /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
 
+      {/* Custom 404 Error Route */}
       <Route path="*" element={<PublicLayout><NotFound /></PublicLayout>} />
     </Routes>
   );

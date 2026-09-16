@@ -7,6 +7,7 @@ const applicationSchema = new mongoose.Schema({
   portfolio_link: { type: String, default: '' },
   motivation: { type: String, required: true },
   status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
+  applied_at: { type: Date, default: Date.now },
 }, { timestamps: true });
 
 export default mongoose.model('Application', applicationSchema);

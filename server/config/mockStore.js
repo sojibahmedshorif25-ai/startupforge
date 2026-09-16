@@ -1,0 +1,183 @@
+import bcrypt from 'bcryptjs';
+
+const hashedPasswordAdmin = await bcrypt.hash('Admin123!', 10);
+const hashedPasswordFounder = await bcrypt.hash('Founder123!', 10);
+const hashedPasswordUser = await bcrypt.hash('User123!', 10);
+
+export const mockUsers = [
+  {
+    _id: 'usr_admin_1',
+    name: 'StartupForge Admin',
+    email: 'admin@startupforge.com',
+    password: hashedPasswordAdmin,
+    role: 'admin',
+    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+    isBlocked: false,
+    isPremium: true,
+    skills: ['Platform Admin', 'Management', 'Moderation'],
+    bio: 'StartupForge system administrator.',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    _id: 'usr_founder_1',
+    name: 'Alex Rivera',
+    email: 'alex.founder@techvision.io',
+    password: hashedPasswordFounder,
+    role: 'founder',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+    isBlocked: false,
+    isPremium: true,
+    skills: ['AI/ML', 'Product Strategy', 'React', 'Node.js'],
+    bio: 'Serial entrepreneur & AI practitioner building next-gen developer tools.',
+    opportunityCount: 2,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    _id: 'usr_founder_2',
+    name: 'Sarah Chen',
+    email: 'sarah.founder@healthai.com',
+    password: hashedPasswordFounder,
+    role: 'founder',
+    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+    isBlocked: false,
+    isPremium: false,
+    skills: ['HealthTech', 'Python', 'Biotech', 'Growth'],
+    bio: 'HealthTech pioneer bridging clinical diagnostics and machine learning.',
+    opportunityCount: 1,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    _id: 'usr_collab_1',
+    name: 'John Developer',
+    email: 'dev.john@gmail.com',
+    password: hashedPasswordUser,
+    role: 'collaborator',
+    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150',
+    isBlocked: false,
+    isPremium: false,
+    skills: ['React', 'Node.js', 'MongoDB', 'Tailwind CSS', 'TypeScript'],
+    bio: 'Fullstack developer with 4+ years of React, Node, and Tailwind CSS experience.',
+    createdAt: new Date().toISOString(),
+  },
+];
+
+export const mockStartups = [
+  {
+    _id: 'stp_1',
+    startup_name: 'NexusAI Synthetics',
+    logo: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200',
+    industry: 'AI & Data Science',
+    description: 'Building autonomous AI agents to automate software documentation and architectural code analysis.',
+    funding_stage: 'Seed ($1.2M)',
+    founder_email: 'alex.founder@techvision.io',
+    founder_name: 'Alex Rivera',
+    team_size_needed: 4,
+    status: 'approved',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    _id: 'stp_2',
+    startup_name: 'BioPulse Health',
+    logo: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=200',
+    industry: 'Healthcare',
+    description: 'Real-time wearable telemetry analytics for athletic stress monitoring and preventative care.',
+    funding_stage: 'Pre-Seed ($400K)',
+    founder_email: 'sarah.founder@healthai.com',
+    founder_name: 'Sarah Chen',
+    team_size_needed: 3,
+    status: 'approved',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    _id: 'stp_3',
+    startup_name: 'FinFlow Protocol',
+    logo: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=200',
+    industry: 'Finance',
+    description: 'Next-generation algorithmic liquidity management platform for decentralized trade settlement.',
+    funding_stage: 'Series A ($4.5M)',
+    founder_email: 'alex.founder@techvision.io',
+    founder_name: 'Alex Rivera',
+    team_size_needed: 5,
+    status: 'approved',
+    createdAt: new Date().toISOString(),
+  },
+];
+
+export const mockOpportunities = [
+  {
+    _id: 'opp_1',
+    startup_id: {
+      _id: 'stp_1',
+      startup_name: 'NexusAI Synthetics',
+      logo: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200',
+      industry: 'AI & Data Science',
+    },
+    role_title: 'Senior Frontend Engineer',
+    required_skills: ['React', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
+    work_type: 'remote',
+    commitment_level: 'full-time',
+    deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    description: 'Lead the frontend architecture for our interactive AI agent canvas UI using React and WebSockets.',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    _id: 'opp_2',
+    startup_id: {
+      _id: 'stp_1',
+      startup_name: 'NexusAI Synthetics',
+      logo: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200',
+      industry: 'AI & Data Science',
+    },
+    role_title: 'Backend Systems Architect',
+    required_skills: ['Node.js', 'Express', 'MongoDB', 'Redis'],
+    work_type: 'hybrid',
+    commitment_level: 'full-time',
+    deadline: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString(),
+    description: 'Design robust microservices and high-throughput vector database pipelines.',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    _id: 'opp_3',
+    startup_id: {
+      _id: 'stp_2',
+      startup_name: 'BioPulse Health',
+      logo: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=200',
+      industry: 'Healthcare',
+    },
+    role_title: 'Mobile App Lead (React Native)',
+    required_skills: ['React', 'React Native', 'BLE Telemetry', 'Redux'],
+    work_type: 'remote',
+    commitment_level: 'part-time',
+    deadline: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
+    description: 'Create ultra-smooth mobile Bluetooth communication layer for real-time heart health monitoring.',
+    createdAt: new Date().toISOString(),
+  },
+];
+
+export const mockApplications = [
+  {
+    _id: 'app_1',
+    opportunity_id: 'opp_1',
+    opportunity_name: 'Senior Frontend Engineer',
+    startup_name: 'NexusAI Synthetics',
+    applicant_email: 'dev.john@gmail.com',
+    applicant_name: 'John Developer',
+    portfolio_link: 'https://github.com/johndev-demo',
+    motivation: 'I have built over 10 production React apps and love AI toolings. Excited to join NexusAI!',
+    status: 'pending',
+    applied_at: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+  },
+];
+
+export const mockPayments = [
+  {
+    _id: 'pay_1',
+    user_email: 'alex.founder@techvision.io',
+    amount: 10,
+    transaction_id: 'tx_demo_stripe_998124',
+    payment_status: 'completed',
+    paid_at: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+  },
+];
