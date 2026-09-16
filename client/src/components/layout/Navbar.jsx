@@ -8,6 +8,7 @@ const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/startups', label: 'Browse Startups' },
   { to: '/opportunities', label: 'Browse Opportunities' },
+  { to: '/pricing', label: 'Pricing & Pro' },
 ];
 
 export default function Navbar() {

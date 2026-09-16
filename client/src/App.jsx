@@ -24,6 +24,7 @@ import ManageUsers from './pages/dashboard/Admin/ManageUsers';
 import ManageStartups from './pages/dashboard/Admin/ManageStartups';
 import Transactions from './pages/dashboard/Admin/Transactions';
 import PaymentSuccess from './pages/public/PaymentSuccess';
+import Pricing from './pages/public/Pricing';
 
 const PrivateRoute = ({ children, roles }) => {
   const { user, loading } = useAuth();
@@ -66,6 +67,7 @@ export default function App() {
       <Route path="/startups" element={<PublicLayout><BrowseStartups /></PublicLayout>} />
       <Route path="/startups/:id" element={<PublicLayout><StartupDetails /></PublicLayout>} />
       <Route path="/opportunities" element={<PublicLayout><BrowseOpportunities /></PublicLayout>} />
+      <Route path="/pricing" element={<PublicLayout><Pricing /></PublicLayout>} />
       <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
       <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
       <Route path="/payment/success" element={<PublicLayout><PaymentSuccess /></PublicLayout>} />
