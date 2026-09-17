@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import api from '../lib/axios';
+import { translations } from '../utils/translations';
 
 const AuthContext = createContext();
 
@@ -11,8 +12,26 @@ export const AuthProvider = ({ children }) => {
 
   // Dark/Light Theme state
   const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem('theme') === 'dark';
+    const saved = localStorage.getItem('theme');
+    if (saved) return saved === 'dark';
+    return true; // Default dark mode for modern SaaS aesthetic
   });
+
+  // Language state (EN / BN)
+  const [language, setLanguage] = useState(() => {
+    return localStorage.getItem('language') || 'EN';
+  });
+
+  const toggleLanguage = () => {
+    const nextLang = language === 'EN' ? 'BN' : 'EN';
+    setLanguage(nextLang);
+    localStorage.setItem('language', nextLang);
+  };
+
+  const t = (key) => {
+    const langDict = translations[language] || translations.EN;
+    return langDict[key] || translations.EN[key] || key;
+  };
 
   // Bookmarks state
   const [bookmarks, setBookmarks] = useState(() => {
@@ -101,6 +120,9 @@ export const AuthProvider = ({ children }) => {
         checkAuth,
         darkMode,
         toggleTheme,
+        language,
+        toggleLanguage,
+        t,
         bookmarks,
         toggleBookmark,
         notifications,

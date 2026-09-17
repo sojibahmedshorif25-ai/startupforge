@@ -4,27 +4,41 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import Sidebar from './components/layout/Sidebar';
 import Loader from './components/Loader';
+import AIChatWidget from './components/ai/AIChatWidget';
+
 import Home from './pages/public/Home';
 import BrowseStartups from './pages/public/BrowseStartups';
 import StartupDetails from './pages/public/StartupDetails';
 import BrowseOpportunities from './pages/public/BrowseOpportunities';
+import OpportunityDetails from './pages/public/OpportunityDetails';
 import Login from './pages/public/Login';
 import Register from './pages/public/Register';
-import NotFound from './pages/public/NotFound';
+import NotFound from './pages/NotFound';
+import PaymentSuccess from './pages/public/PaymentSuccess';
+import Pricing from './pages/public/Pricing';
+
 import FounderOverview from './pages/dashboard/Founder/Overview';
 import MyStartup from './pages/dashboard/Founder/MyStartup';
 import AddOpportunity from './pages/dashboard/Founder/AddOpportunity';
 import ManageOpportunities from './pages/dashboard/Founder/ManageOpportunities';
 import Applications from './pages/dashboard/Founder/Applications';
+import FounderAnalytics from './pages/dashboard/Founder/FounderAnalytics';
+
 import CollaboratorOverview from './pages/dashboard/Collaborator/Overview';
 import MyApplications from './pages/dashboard/Collaborator/MyApplications';
+import AIMatch from './pages/dashboard/Collaborator/AIMatch';
+import ResumeAnalyzer from './pages/dashboard/Collaborator/ResumeAnalyzer';
+import AIAssistantPage from './pages/dashboard/Collaborator/AIAssistantPage';
+
+import Bookmarks from './pages/dashboard/Bookmarks';
 import Profile from './pages/dashboard/Profile';
+
 import AdminOverview from './pages/dashboard/Admin/Overview';
 import ManageUsers from './pages/dashboard/Admin/ManageUsers';
 import ManageStartups from './pages/dashboard/Admin/ManageStartups';
 import Transactions from './pages/dashboard/Admin/Transactions';
-import PaymentSuccess from './pages/public/PaymentSuccess';
-import Pricing from './pages/public/Pricing';
+import AdminOpportunities from './pages/dashboard/Admin/AdminOpportunities';
+import AdminActivity from './pages/dashboard/Admin/AdminActivity';
 
 const PrivateRoute = ({ children, roles }) => {
   const { user, loading } = useAuth();
@@ -40,6 +54,7 @@ const PublicLayout = ({ children }) => (
     <main className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
       {children}
     </main>
+    <AIChatWidget />
     <Footer />
   </>
 );
@@ -53,6 +68,7 @@ const DashboardLayout = ({ children, allowedRoles }) => {
       <div className="flex-1 md:ml-64 pb-16 md:pb-0">
         <div className="p-4 md:p-8 max-w-7xl mx-auto">{children}</div>
       </div>
+      <AIChatWidget />
     </div>
   );
 };
@@ -67,6 +83,7 @@ export default function App() {
       <Route path="/startups" element={<PublicLayout><BrowseStartups /></PublicLayout>} />
       <Route path="/startups/:id" element={<PublicLayout><StartupDetails /></PublicLayout>} />
       <Route path="/opportunities" element={<PublicLayout><BrowseOpportunities /></PublicLayout>} />
+      <Route path="/opportunities/:id" element={<PublicLayout><OpportunityDetails /></PublicLayout>} />
       <Route path="/pricing" element={<PublicLayout><Pricing /></PublicLayout>} />
       <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
       <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
@@ -114,6 +131,14 @@ export default function App() {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/dashboard/founder/analytics"
+        element={
+          <PrivateRoute roles={['founder']}>
+            <DashboardLayout allowedRoles={['founder']}><FounderAnalytics /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
 
       {/* Collaborator Dashboard Routes */}
       <Route
@@ -132,8 +157,40 @@ export default function App() {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/dashboard/ai-match"
+        element={
+          <PrivateRoute roles={['collaborator']}>
+            <DashboardLayout allowedRoles={['collaborator']}><AIMatch /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/resume-analyzer"
+        element={
+          <PrivateRoute roles={['collaborator']}>
+            <DashboardLayout allowedRoles={['collaborator']}><ResumeAnalyzer /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/ai-assistant"
+        element={
+          <PrivateRoute roles={['collaborator', 'founder']}>
+            <DashboardLayout allowedRoles={['collaborator', 'founder']}><AIAssistantPage /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
 
-      {/* Shared User Profile */}
+      {/* Shared Bookmarks & Profile */}
+      <Route
+        path="/dashboard/bookmarks"
+        element={
+          <PrivateRoute roles={['founder', 'collaborator', 'admin']}>
+            <DashboardLayout allowedRoles={['founder', 'collaborator', 'admin']}><Bookmarks /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/dashboard/profile"
         element={
@@ -169,10 +226,26 @@ export default function App() {
         }
       />
       <Route
+        path="/dashboard/admin/opportunities"
+        element={
+          <PrivateRoute roles={['admin']}>
+            <DashboardLayout allowedRoles={['admin']}><AdminOpportunities /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
         path="/dashboard/admin/transactions"
         element={
           <PrivateRoute roles={['admin']}>
             <DashboardLayout allowedRoles={['admin']}><Transactions /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/admin/activity"
+        element={
+          <PrivateRoute roles={['admin']}>
+            <DashboardLayout allowedRoles={['admin']}><AdminActivity /></DashboardLayout>
           </PrivateRoute>
         }
       />

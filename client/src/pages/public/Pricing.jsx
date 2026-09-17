@@ -54,10 +54,10 @@ export default function Pricing() {
         <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 text-xs font-extrabold uppercase tracking-wider mb-4">
           <FiStar className="text-amber-400" /> Flexible Pricing for Founders & Teams
         </span>
-        <h1 className="text-4xl md:text-6xl font-black mb-4 text-slate-900 dark:text-white tracking-tight">
+        <h1 className="text-4xl md:text-6xl font-black mb-4 text-white tracking-tight">
           Simple, Transparent <span className="gradient-text">Pricing Plans</span>
         </h1>
-        <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed">
+        <p className="text-slate-400 text-lg leading-relaxed">
           Scale your startup recruitment with AI-driven co-pilot tools, unlimited job postings, and Stripe-powered payments.
         </p>
       </motion.div>
@@ -69,21 +69,21 @@ export default function Pricing() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="card p-8 md:p-10 flex flex-col justify-between border border-slate-200 dark:border-slate-800 shadow-xl"
+          className="card p-8 md:p-10 flex flex-col justify-between"
         >
           <div>
-            <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full text-xs font-extrabold uppercase tracking-wider mb-4 inline-block">
+            <span className="px-3 py-1 bg-white/5 text-slate-300 rounded-full text-xs font-extrabold uppercase tracking-wider mb-4 inline-block border border-white/10">
               Free Collaborator
             </span>
-            <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-2">Free Starter</h3>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">Perfect for collaborators, engineers, and early-stage researchers.</p>
+            <h3 className="text-3xl font-extrabold text-white mb-2">Free Starter</h3>
+            <p className="text-slate-400 text-sm mb-6">Perfect for collaborators, engineers, and early-stage researchers.</p>
 
             <div className="flex items-baseline gap-1 mb-8">
-              <span className="text-5xl font-black text-slate-900 dark:text-white">$0</span>
+              <span className="text-5xl font-black text-white">$0</span>
               <span className="text-slate-500 text-sm font-semibold">/ forever</span>
             </div>
 
-            <ul className="space-y-4 text-sm text-slate-700 dark:text-slate-300 mb-8">
+            <ul className="space-y-4 text-sm text-slate-300 mb-8">
               {[
                 'Browse 15+ verified tech startups',
                 'Apply to unlimited open positions',
@@ -109,8 +109,12 @@ export default function Pricing() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="card p-8 md:p-10 flex flex-col justify-between border-2 border-indigo-500 shadow-2xl relative overflow-hidden bg-slate-950 text-white"
+          className="relative p-[2px] rounded-3xl overflow-hidden group"
         >
+          {/* Animated gradient border */}
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-indigo-500 to-pink-500 animate-border-spin opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
+          
+          <div className="card h-full p-8 md:p-10 flex flex-col justify-between relative z-10 bg-[#0B0E14] border-0">
           <div className="absolute top-0 right-0 px-4 py-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-[11px] font-black uppercase tracking-wider rounded-bl-2xl shadow-lg">
             Most Popular
           </div>
@@ -155,17 +159,19 @@ export default function Pricing() {
             <button
               onClick={handleDemoUpgrade}
               disabled={loading}
-              className="w-full py-2.5 bg-slate-900 border border-slate-800 text-slate-400 hover:text-white rounded-xl text-xs font-bold transition-all text-center"
+              className="w-full py-2.5 premium-glass text-indigo-300 hover:text-white hover:bg-white/10 rounded-xl text-xs font-bold transition-all text-center border border-indigo-500/30 mt-2"
             >
               ⚡ 1-Click Instant Demo Payment Simulation
             </button>
+          </div>
           </div>
         </motion.div>
       </div>
 
       {/* Trust & Guarantee */}
-      <div className="p-8 rounded-3xl bg-slate-900 border border-slate-800 text-white max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
-        <div className="flex items-center gap-4">
+      <div className="premium-glass p-8 rounded-3xl text-white max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden group">
+        <div className="absolute inset-0 bg-indigo-500/5 group-hover:bg-indigo-500/10 transition-colors"></div>
+        <div className="flex items-center gap-4 relative z-10">
           <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
             <FiShield size={28} />
           </div>

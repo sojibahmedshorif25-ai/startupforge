@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api from '../../lib/axios';
 import { useAuth } from '../../context/AuthContext';
-import { FiUsers, FiGrid, FiChevronLeft, FiChevronRight, FiBookmark, FiSearch, FiLayers, FiTrendingUp } from 'react-icons/fi';
+import { FiUsers, FiGrid, FiChevronLeft, FiChevronRight, FiBookmark, FiSearch, FiLayers, FiTrendingUp, FiThumbsUp, FiArrowRight } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
 const industries = ['All', 'AI & Data Science', 'HealthTech', 'ClimateTech', 'FinTech', 'EdTech', 'Cybersecurity', 'Robotics & Automation', 'SaaS & DevOps', 'AgriTech', 'Logistics', 'Real Estate Tech'];
 
 export default function BrowseStartups() {
-  const { bookmarks, toggleBookmark } = useAuth();
+  const { bookmarks, toggleBookmark, t } = useAuth();
+  const navigate = useNavigate();
   const [startups, setStartups] = useState([]);
   const [industry, setIndustry] = useState('');
   const [search, setSearch] = useState('');
@@ -44,6 +45,18 @@ export default function BrowseStartups() {
     fetchStartups();
   }, [page, industry, search]);
 
+  const handleUpvote = async (id, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const { data } = await api.post(`/startups/${id}/upvote`);
+      setStartups(startups.map(s => s._id === id ? { ...s, upvotes: data.upvotes } : s));
+      toast.success(data.upvoted ? '🔥 Upvoted Startup!' : 'Upvote removed');
+    } catch {
+      toast.error('Could not register upvote');
+    }
+  };
+
   return (
     <div className="max-w-[1600px] mx-auto px-6 lg:px-12 py-12">
       {/* Header Banner */}
@@ -52,7 +65,7 @@ export default function BrowseStartups() {
           <FiTrendingUp /> 15+ Verified Venture Backed Startups
         </span>
         <h1 className="text-4xl md:text-6xl font-black mb-4 text-slate-900 dark:text-white tracking-tight">
-          Discover <span className="gradient-text">Next-Gen Startups</span>
+          {t('startups')}
         </h1>
         <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed">
           Connect with visionary founders, explore high-impact ventures, and find your next founding role.
@@ -112,7 +125,8 @@ export default function BrowseStartups() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.04 }}
-                  className="card overflow-hidden card-hover group flex flex-col justify-between border border-slate-200/80 dark:border-slate-800/80 shadow-xl hover:shadow-2xl transition-all duration-300"
+                  onClick={() => navigate(`/startups/${startup._id}`)}
+                  className="card cursor-pointer overflow-hidden card-hover group flex flex-col justify-between border border-slate-200/80 dark:border-slate-800/80 shadow-xl hover:shadow-2xl transition-all duration-300"
                 >
                   <div className="h-48 relative overflow-hidden bg-slate-950">
                     <img
@@ -124,7 +138,15 @@ export default function BrowseStartups() {
                     
                     <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
                       <button
-                        onClick={() => {
+                        onClick={(e) => handleUpvote(startup._id, e)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-black/60 backdrop-blur-md text-amber-400 hover:text-white border border-amber-500/30 hover:bg-amber-500 rounded-xl text-xs font-black transition-all shadow-md active:scale-95"
+                      >
+                        <FiThumbsUp size={14} />
+                        <span>{startup.upvotes || 42}</span>
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
                           toggleBookmark(startup._id);
                           toast.success(isBookmarked ? 'Bookmark removed' : 'Startup bookmarked!');
                         }}
@@ -170,12 +192,15 @@ export default function BrowseStartups() {
                           <FiLayers className="mr-1" size={14} /> Verified Team
                         </span>
                       </div>
-                      <Link
-                        to={`/startups/${startup._id}`}
-                        className="block w-full text-center py-3 btn-primary text-sm font-bold shadow-lg shadow-indigo-500/20"
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/startups/${startup._id}`);
+                        }}
+                        className="w-full text-center py-3 btn-primary text-sm font-bold shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-1.5"
                       >
-                        Explore Startup
-                      </Link>
+                        Explore Startup Details <FiArrowRight className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 </motion.div>

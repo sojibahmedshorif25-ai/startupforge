@@ -8,60 +8,78 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-    @apply bg-slate-950 text-slate-100 transition-colors duration-300;
+    @apply bg-slate-50 text-slate-900 dark:bg-[#07090F] dark:text-slate-100 transition-colors duration-300;
   }
   html { scroll-behavior: smooth; }
 }
 
 @layer components {
+  /* Premium Glowing Button - Electric Indigo & Sapphire Cyan */
   .btn-primary {
-    @apply bg-gradient-to-r from-purple-600 via-indigo-600 to-violet-600 text-white px-6 py-3 rounded-2xl font-bold
-    hover:from-purple-700 hover:via-indigo-700 hover:to-violet-700 transition-all duration-300 shadow-lg shadow-purple-600/30
-    hover:shadow-purple-600/50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2;
+    @apply bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 text-white px-6 py-3 rounded-2xl font-bold
+    hover:from-indigo-500 hover:via-blue-500 hover:to-indigo-600 transition-all duration-300 shadow-[0_4px_20px_rgba(99,102,241,0.25)]
+    hover:shadow-[0_6px_30px_rgba(99,102,241,0.45)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2;
   }
+  
   .btn-secondary {
-    @apply bg-slate-900 text-slate-200 px-6 py-3 rounded-2xl font-bold border border-slate-800
-    hover:border-purple-500 hover:text-purple-400 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2;
+    @apply bg-slate-200/80 hover:bg-slate-300 text-slate-900 border border-slate-300/80 
+    dark:bg-white/10 dark:hover:bg-white/15 dark:text-white dark:border-white/10 dark:hover:border-indigo-500/50 
+    px-6 py-3 rounded-2xl font-bold transition-all duration-300 active:scale-[0.98] shadow-md flex items-center justify-center gap-2;
   }
+
   .btn-danger {
-    @apply bg-gradient-to-r from-rose-500 to-red-600 text-white px-4 py-2 rounded-xl font-medium
-    hover:from-rose-600 hover:to-red-700 transition-all duration-300 shadow-md shadow-rose-500/25 active:scale-95;
+    @apply bg-gradient-to-r from-rose-600 to-red-600 text-white px-4 py-2 rounded-xl font-medium
+    hover:from-rose-500 hover:to-red-500 transition-all duration-300 shadow-md active:scale-[0.98];
   }
+
   .btn-success {
     @apply bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 rounded-xl font-medium
-    hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 shadow-md shadow-emerald-500/25 active:scale-95;
+    hover:from-emerald-400 hover:to-teal-500 transition-all duration-300 shadow-md active:scale-[0.98];
   }
+
   .btn-ai {
-    @apply bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 text-white px-5 py-2.5 rounded-2xl font-extrabold
-    hover:from-purple-700 hover:via-pink-700 hover:to-indigo-700 transition-all duration-300 shadow-lg shadow-purple-500/40
-    hover:shadow-purple-500/60 active:scale-95 flex items-center gap-2;
+    @apply bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white px-5 py-2.5 rounded-2xl font-extrabold
+    hover:from-indigo-500 hover:via-purple-500 hover:to-indigo-600 transition-all duration-300 shadow-[0_4px_20px_rgba(99,102,241,0.3)]
+    hover:shadow-[0_6px_30px_rgba(99,102,241,0.5)] active:scale-[0.98] flex items-center justify-center gap-2;
   }
+  
+  /* Input fields with crisp light & dark support */
   .input-field {
-    @apply w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-2xl text-slate-100
-    focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 outline-none transition-all duration-300 placeholder:text-slate-500;
+    @apply w-full px-4 py-3 bg-white text-slate-900 border border-slate-300 rounded-2xl 
+    dark:bg-[#0B0E14]/80 dark:text-slate-100 dark:border-slate-800/80
+    focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all duration-300 
+    placeholder:text-slate-400 dark:placeholder:text-slate-600 hover:border-slate-400 dark:hover:border-slate-700;
   }
+  
+  /* Cards with light and dark mode backgrounds */
   .card {
-    @apply bg-slate-900/90 rounded-3xl shadow-2xl border border-slate-800/80
-    transition-all duration-300 backdrop-blur-xl;
+    @apply bg-white text-slate-900 border border-slate-200/80 shadow-lg 
+    dark:bg-[#0B0E14]/90 dark:text-slate-100 dark:border-slate-800/80 dark:shadow-2xl 
+    rounded-3xl backdrop-blur-xl transition-all duration-300;
   }
+
   .card-hover {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-purple-500/20 hover:border-purple-500/40;
+    @apply hover:-translate-y-1.5 hover:shadow-2xl hover:border-indigo-500/40;
   }
+
+  .premium-glass {
+    @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-[24px] border border-slate-200 dark:border-white/[0.05] shadow-lg dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
+  }
+  
+  /* Typography */
   .section-title {
-    @apply text-3xl md:text-5xl font-black text-white tracking-tight;
+    @apply text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tight;
   }
+
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-indigo-300 to-pink-400;
-  }
-  .glass-card {
-    @apply bg-slate-900/80 backdrop-blur-2xl border border-slate-800 shadow-2xl;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 dark:from-indigo-400 dark:via-blue-400 dark:to-cyan-300;
   }
 }
 
 @layer utilities {
   .loader {
-    border: 3px solid rgba(168, 85, 247, 0.2);
-    border-top-color: #a855f7;
+    border: 3px solid rgba(99, 102, 241, 0.2);
+    border-top-color: #6366f1;
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -72,25 +90,13 @@
     height: 56px;
     border-width: 4px;
   }
-  .purple-glow {
-    box-shadow: 0 0 35px -5px rgba(168, 85, 247, 0.3);
-  }
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-.animate-float {
-  animation: float 3.5s ease-in-out infinite;
-}
-
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #64748b; }
+::-webkit-scrollbar-track { @apply bg-slate-100 dark:bg-[#07090F]; }
+::-webkit-scrollbar-thumb { @apply bg-slate-300 dark:bg-slate-800 rounded-full; }
+::-webkit-scrollbar-thumb:hover { @apply bg-slate-400 dark:bg-slate-700; }

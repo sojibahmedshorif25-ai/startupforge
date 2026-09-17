@@ -16,6 +16,8 @@ import {
   FiX,
   FiAward,
   FiTrendingUp,
+  FiArrowRight,
+  FiBookmark
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
@@ -23,7 +25,7 @@ const workTypes = ['', 'remote', 'onsite', 'hybrid'];
 const industries = ['', 'AI & Data Science', 'HealthTech', 'ClimateTech', 'FinTech', 'EdTech', 'Cybersecurity', 'Robotics & Automation', 'SaaS & DevOps', 'AgriTech', 'Logistics', 'Real Estate Tech'];
 
 export default function BrowseOpportunities() {
-  const { user } = useAuth();
+  const { user, t } = useAuth();
   const navigate = useNavigate();
   const [opportunities, setOpportunities] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -69,7 +71,8 @@ export default function BrowseOpportunities() {
     fetchOpportunities();
   };
 
-  const handleOpenApplyModal = async (opp) => {
+  const handleOpenApplyModal = async (opp, e) => {
+    if (e) e.stopPropagation();
     if (!user) {
       navigate('/login');
       return;
@@ -143,6 +146,25 @@ export default function BrowseOpportunities() {
     }
   };
 
+  const handleBookmarkToggle = async (oppId, e) => {
+    e.stopPropagation();
+    if (!user) {
+      toast.error('Please login to bookmark opportunities');
+      return;
+    }
+    try {
+      const { data } = await api.post('/bookmarks/toggle', {
+        item_type: 'opportunity',
+        opportunity_id: oppId,
+      });
+      if (data.success) {
+        toast.success(data.bookmarked ? 'Saved to Bookmarks!' : 'Removed from Bookmarks');
+      }
+    } catch (err) {
+      toast.error('Failed to toggle bookmark');
+    }
+  };
+
   return (
     <div className="max-w-[1600px] mx-auto px-6 lg:px-12 py-12">
       {/* Header Banner */}
@@ -151,7 +173,7 @@ export default function BrowseOpportunities() {
           <FiZap /> Powered by Gemini AI Skill Matcher
         </span>
         <h1 className="text-4xl md:text-6xl font-black mb-4 text-slate-900 dark:text-white tracking-tight">
-          Explore <span className="gradient-text">Open Startup Roles</span>
+          {t('opportunities')}
         </h1>
         <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed">
           Find your dream founding role, test your skill match score with AI, and craft winning applications.
@@ -176,11 +198,11 @@ export default function BrowseOpportunities() {
             onClick={() => setShowFilters(!showFilters)}
             className="md:hidden px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-300 flex items-center justify-center gap-2 font-bold"
           >
-            <FiFilter size={18} /> Filters
+            <FiFilter size={18} /> {t('filter')}
           </button>
           <button type="submit" className="btn-primary px-8 text-base">
             <FiSearch size={18} />
-            <span>Search Roles</span>
+            <span>{t('search')}</span>
           </button>
         </div>
 
@@ -193,7 +215,7 @@ export default function BrowseOpportunities() {
             }}
             className="input-field md:w-60 shadow-sm"
           >
-            <option value="">All Work Types</option>
+            <option value="">{t('allWorkTypes')}</option>
             {workTypes.filter(Boolean).map((wt) => (
               <option key={wt} value={wt} className="capitalize">
                 {wt.charAt(0).toUpperCase() + wt.slice(1)} Work
@@ -208,7 +230,7 @@ export default function BrowseOpportunities() {
             }}
             className="input-field md:w-60 shadow-sm"
           >
-            <option value="">All Industries</option>
+            <option value="">{t('allIndustries')}</option>
             {industries.filter(Boolean).map((ind) => (
               <option key={ind} value={ind}>
                 {ind}
@@ -236,7 +258,8 @@ export default function BrowseOpportunities() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.04 }}
-                className="card p-6 card-hover flex flex-col justify-between border border-slate-200/80 dark:border-slate-800/80 shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden"
+                onClick={() => navigate(`/opportunities/${opp._id}`)}
+                className="card cursor-pointer p-6 card-hover flex flex-col justify-between border border-slate-200/80 dark:border-slate-800/80 shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-bl-full pointer-events-none"></div>
                 <div>
@@ -250,9 +273,19 @@ export default function BrowseOpportunities() {
                         <FiBriefcase className="mr-1 text-indigo-500" size={14} /> {opp.startup_id?.startup_name || 'Verified Startup'}
                       </p>
                     </div>
-                    <span className="px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl text-xs font-bold capitalize shrink-0 shadow-md">
-                      {opp.work_type}
-                    </span>
+
+                    <div className="flex flex-col items-end gap-2">
+                      <span className="px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl text-xs font-bold capitalize shrink-0 shadow-md">
+                        {opp.work_type}
+                      </span>
+                      <button
+                        onClick={(e) => handleBookmarkToggle(opp._id, e)}
+                        className="p-1.5 text-slate-400 hover:text-amber-500 transition-colors"
+                        title="Bookmark position"
+                      >
+                        <FiBookmark size={16} />
+                      </button>
+                    </div>
                   </div>
 
                   <div className="flex flex-wrap gap-1.5 mb-5">
@@ -281,12 +314,23 @@ export default function BrowseOpportunities() {
                   </p>
                 </div>
 
-                <button
-                  onClick={() => handleOpenApplyModal(opp)}
-                  className="w-full btn-primary py-3.5 font-bold text-sm shadow-lg shadow-indigo-500/20"
-                >
-                  <FiZap className="mr-1" /> Apply with AI Match Analysis
-                </button>
+                <div className="flex items-center gap-2 pt-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/opportunities/${opp._id}`);
+                    }}
+                    className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-1"
+                  >
+                    View Details <FiArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={(e) => handleOpenApplyModal(opp, e)}
+                    className="flex-1 btn-primary py-3 font-bold text-xs shadow-lg shadow-indigo-500/20"
+                  >
+                    <FiZap className="mr-1" /> Apply Now
+                  </button>
+                </div>
               </motion.div>
             ))}
           </div>

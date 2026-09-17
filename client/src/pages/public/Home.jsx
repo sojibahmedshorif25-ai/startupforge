@@ -2,7 +2,18 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api from '../../lib/axios';
-import { FiUsers, FiBriefcase, FiTarget, FiAward, FiArrowRight, FiStar, FiClock, FiMapPin, FiZap, FiCheckCircle, FiShield, FiTrendingUp } from 'react-icons/fi';
+import { useAuth } from '../../context/AuthContext';
+import {
+  FiUsers,
+  FiBriefcase,
+  FiArrowRight,
+  FiStar,
+  FiZap,
+  FiCheckCircle,
+  FiTrendingUp,
+  FiThumbsUp,
+} from 'react-icons/fi';
+import toast from 'react-hot-toast';
 
 const fadeUp = {
   initial: { opacity: 0, y: 30 },
@@ -12,20 +23,62 @@ const fadeUp = {
 };
 
 export default function Home() {
+  const { t } = useAuth();
   const [startups, setStartups] = useState([]);
   const [opportunities, setOpportunities] = useState([]);
+  const [demoPrompt, setDemoPrompt] = useState('Autonomous AI agent that writes automated integration tests for React & Node.js');
+  const [demoPitch, setDemoPitch] = useState('');
+  const [demoLoading, setDemoLoading] = useState(false);
 
   useEffect(() => {
     api.get('/startups/featured').then(({ data }) => setStartups(data)).catch(() => {});
     api.get('/opportunities/featured').then(({ data }) => setOpportunities(data)).catch(() => {});
   }, []);
 
+  const handleUpvote = async (id, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const { data } = await api.post(`/startups/${id}/upvote`);
+      setStartups(startups.map(s => s._id === id ? { ...s, upvotes: data.upvotes } : s));
+      toast.success(data.upvoted ? '🔥 Upvoted Startup!' : 'Upvote removed');
+    } catch (err) {
+      toast.error('Could not register upvote');
+    }
+  };
+
+  const handleLiveAIDemo = async (e) => {
+    e.preventDefault();
+    if (!demoPrompt.trim()) return;
+    setDemoLoading(true);
+    setDemoPitch('');
+    try {
+      const { data } = await api.post('/ai/generate-pitch', {
+        startupName: 'Demo Venture',
+        industry: 'AI & SaaS',
+        description: demoPrompt
+      });
+      setDemoPitch(data.generatedPitch || 'Generated AI pitch ready!');
+      toast.success('✨ AI Pitch Generated Live!');
+    } catch (err) {
+      toast.error('AI demo unavailable right now');
+    } finally {
+      setDemoLoading(false);
+    }
+  };
+
   return (
     <div className="overflow-hidden">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-white py-24 md:py-36 border-b border-indigo-900/20">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.15),transparent_50%)]"></div>
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+      <section className="relative overflow-hidden bg-slate-50 dark:bg-[#07090F] text-slate-900 dark:text-white py-24 md:py-36 border-b border-slate-200 dark:border-white/5 transition-colors duration-300">
+        {/* Modern Startup Tech Team Background Image */}
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1920&q=80')] bg-cover bg-center opacity-10 dark:opacity-15 mix-blend-overlay pointer-events-none"></div>
+
+        {/* Ambient Lighting */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-[-20%] left-[10%] w-[60%] h-[60%] bg-gradient-to-br from-indigo-500/20 via-purple-500/15 to-transparent rounded-full blur-[140px]"></div>
+          <div className="absolute bottom-[-10%] right-[10%] w-[50%] h-[50%] bg-gradient-to-tl from-purple-500/20 via-pink-500/10 to-transparent rounded-full blur-[140px]"></div>
+        </div>
         
         <div className="max-w-[1600px] mx-auto px-6 lg:px-12 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
@@ -33,21 +86,21 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-5 py-2 bg-indigo-500/10 backdrop-blur-md rounded-full text-xs md:text-sm font-bold text-indigo-300 border border-indigo-500/20 mb-8 shadow-xl"
+              className="inline-flex items-center gap-2 px-5 py-2 bg-indigo-50 dark:bg-white/5 backdrop-blur-md rounded-full text-xs md:text-sm font-bold text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-white/10 mb-8 shadow-xs"
             >
-              <FiStar className="text-amber-400 animate-spin" size={16} />
-              <span>Next-Generation Startup Forge & AI Matchmaking Engine</span>
+              <FiStar className="text-amber-500 animate-spin" size={16} />
+              <span>The Premier AI Matchmaking Platform for Tech Founders & Engineers</span>
             </motion.div>
             
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight tracking-tight"
+              className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight tracking-tight text-slate-900 dark:text-white"
             >
-              Build & Scale Your <br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400">
-                Dream Tech Team
+              {t('heroTitle').split('.')[0]} <br />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-indigo-300 dark:to-purple-400">
+                StartupForge 2.0
               </span>
             </motion.h1>
             
@@ -55,9 +108,9 @@ export default function Home() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-lg md:text-2xl text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed font-normal"
+              className="text-lg md:text-2xl text-slate-600 dark:text-slate-300 mb-10 max-w-3xl mx-auto leading-relaxed font-normal"
             >
-              Connect with top founders, hire elite co-builders, and accelerate venture growth powered by 3 intelligent AI co-pilots.
+              {t('heroDesc')}
             </motion.p>
             
             <motion.div
@@ -66,20 +119,36 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
-              <Link to="/register" className="w-full sm:w-auto group inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white rounded-2xl font-extrabold text-lg hover:shadow-2xl hover:shadow-indigo-500/50 hover:scale-105 transition-all duration-300">
-                Start Building Free
+              <Link to="/register" className="w-full sm:w-auto btn-ai px-8 py-4 text-lg">
+                {t('register')}
                 <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/opportunities" className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 bg-white/5 backdrop-blur-md text-white rounded-2xl font-bold text-lg border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300">
-                Browse 15+ Open Positions
+              <Link to="/opportunities" className="w-full sm:w-auto btn-secondary px-8 py-4 text-lg">
+                {t('findOpportunities')}
               </Link>
             </motion.div>
           </div>
         </div>
       </section>
 
+      {/* Accelerator & Backing Badges Ticker */}
+      <div className="bg-white dark:bg-[#0B0E14] border-b border-slate-200 dark:border-white/5 py-6 overflow-hidden">
+        <div className="max-w-[1600px] mx-auto px-6 text-center">
+          <p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-4">
+            Backed & Supported by Ecosystem Leaders
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16 opacity-70 dark:opacity-60 text-slate-700 dark:text-slate-400 text-sm font-black tracking-wider">
+            <span className="hover:opacity-100 transition-opacity">🚀 Y COMBINATOR W24</span>
+            <span className="hover:opacity-100 transition-opacity">⚡ TECHSTARS SEED</span>
+            <span className="hover:opacity-100 transition-opacity">💎 SEQUOIA CAPITAL</span>
+            <span className="hover:opacity-100 transition-opacity">🔥 PRODUCT HUNT TOP #1</span>
+            <span className="hover:opacity-100 transition-opacity">🛡️ STRIPE VERIFIED</span>
+          </div>
+        </div>
+      </div>
+
       {/* Live Metrics Grid */}
-      <section className="py-12 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
+      <section className="py-12 bg-slate-50 dark:bg-[#07090F] border-b border-slate-200 dark:border-white/5 relative z-20">
         <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
@@ -88,8 +157,8 @@ export default function Home() {
               { value: '$28M+', label: 'Total Venture Funding' },
               { value: '98.5%', label: 'AI Match Accuracy' },
             ].map((stat, i) => (
-              <motion.div key={i} {...fadeUp} transition={{ duration: 0.5, delay: i * 0.1 }} className="text-center p-6 rounded-2xl bg-slate-50 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800">
-                <p className="text-3xl md:text-5xl font-black gradient-text mb-1">{stat.value}</p>
+              <motion.div key={i} {...fadeUp} transition={{ duration: 0.5, delay: i * 0.1 }} className="text-center p-6 rounded-2xl bg-white dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.05] shadow-md dark:shadow-2xl">
+                <p className="text-3xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:to-cyan-300 mb-1">{stat.value}</p>
                 <p className="text-slate-500 dark:text-slate-400 font-semibold text-xs md:text-sm uppercase tracking-wider">{stat.label}</p>
               </motion.div>
             ))}
@@ -97,81 +166,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3 AI Features Showcase */}
-      <section className="py-24 bg-slate-950 text-white relative">
-        <div className="max-w-[1600px] mx-auto px-6 lg:px-12 relative z-10">
-          <motion.div {...fadeUp} className="text-center max-w-3xl mx-auto mb-16">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 text-xs font-extrabold uppercase tracking-wider mb-4">
-              <FiZap /> Powered by Gemini AI Engine
-            </span>
-            <h2 className="text-4xl md:text-6xl font-black mb-4">3 Intelligent AI Features</h2>
-            <p className="text-slate-400 text-lg">Supercharge your startup application, hiring process, and profile creation with Gemini AI.</p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: 'AI Opportunity Pitch Generator',
-                tag: 'Feature #1',
-                desc: 'Founders enter basic startup info and AI drafts a high-converting pitch and extracts required skills instantly.',
-                badgeColor: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
-                btnText: 'Try Pitch Generator',
-                link: '/dashboard/founder/add-opportunity'
-              },
-              {
-                title: 'AI Skill Match & Motivation Letter',
-                tag: 'Feature #2',
-                desc: 'Applicants receive a dynamic % fit score between their skills and job requirements, plus a custom cover letter.',
-                badgeColor: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
-                btnText: 'Test Skill Matcher',
-                link: '/opportunities'
-              },
-              {
-                title: 'AI Bio & Skill Extraction',
-                tag: 'Feature #3',
-                desc: 'Collaborators input raw experience notes and AI generates an executive bio and tags top technical skills.',
-                badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-                btnText: 'Enhance Your Bio',
-                link: '/dashboard/profile'
-              }
-            ].map((feature, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15 }}
-                className="p-8 rounded-3xl bg-slate-900 border border-slate-800 hover:border-purple-500/50 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-2 shadow-2xl"
-              >
-                <div>
-                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-extrabold border ${feature.badgeColor} mb-6`}>
-                    {feature.tag}
-                  </span>
-                  <h3 className="text-2xl font-bold mb-3 text-white group-hover:text-purple-400 transition-colors">{feature.title}</h3>
-                  <p className="text-slate-400 text-sm leading-relaxed mb-6">{feature.desc}</p>
-                </div>
-                <Link
-                  to={feature.link}
-                  className="btn-ai w-full text-sm py-3 justify-center font-bold"
-                >
-                  <FiZap /> {feature.btnText}
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Startups Grid */}
-      <section className="py-24 bg-slate-50 dark:bg-slate-950">
+      {/* Product Hunt Style Trending Startups with Upvotes */}
+      <section className="py-24 bg-white dark:bg-[#0B0E14] relative border-b border-slate-200 dark:border-white/5">
         <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
           <motion.div {...fadeUp} className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
             <div>
-              <span className="text-xs font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">Handpicked Ventures</span>
-              <h2 className="section-title mt-2">Featured Startups</h2>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-full text-xs font-black uppercase tracking-wider mb-2">
+                <FiTrendingUp /> Product Hunt Style Upvotes
+              </span>
+              <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white">{t('featuredStartups')}</h2>
             </div>
-            <Link to="/startups" className="mt-4 md:mt-0 inline-flex items-center text-indigo-600 dark:text-indigo-400 font-bold hover:underline group">
-              Explore All 15 Startups <FiArrowRight className="ml-1 group-hover:translate-x-1 transition-transform" />
+            <Link to="/startups" className="mt-4 md:mt-0 inline-flex items-center text-indigo-600 dark:text-indigo-400 font-bold hover:underline group transition-colors">
+              {t('exploreStartups')} <FiArrowRight className="ml-1 group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
 
@@ -183,20 +189,36 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="card overflow-hidden card-hover group border border-slate-200 dark:border-slate-800"
+                className="rounded-3xl bg-slate-50 dark:bg-[#0B0E14] border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden group flex flex-col justify-between"
               >
-                <div className="h-48 relative overflow-hidden bg-slate-950">
-                  <img src={startup.logo} alt={startup.startup_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" />
+                <div className="h-48 relative overflow-hidden bg-slate-900">
+                  <img src={startup.logo || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400'} alt={startup.startup_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
-                  <div className="absolute top-4 right-4 z-10">
-                    <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold text-white border border-white/20">{startup.industry}</span>
+                  
+                  {/* Upvote Pill */}
+                  <button
+                    onClick={(e) => handleUpvote(startup._id, e)}
+                    className="absolute top-4 right-4 z-10 flex items-center gap-1.5 px-3 py-1.5 bg-black/60 backdrop-blur-md text-amber-400 hover:text-white border border-amber-500/30 hover:bg-amber-500 rounded-xl text-xs font-black transition-all shadow-lg scale-100 hover:scale-105 active:scale-95"
+                  >
+                    <FiThumbsUp size={14} />
+                    <span>{startup.upvotes || 42} Upvotes</span>
+                  </button>
+
+                  <div className="absolute bottom-3 left-4">
+                    <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold text-white border border-white/20">
+                      {startup.industry}
+                    </span>
                   </div>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-1 text-slate-900 dark:text-white">{startup.startup_name}</h3>
-                  <p className="text-slate-500 text-xs mb-3">Founded by {startup.founder_name}</p>
-                  <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mb-4 line-clamp-2">{startup.description}</p>
-                  <Link to={`/startups/${startup._id}`} className="block w-full text-center py-3 btn-primary text-sm font-bold">
+
+                <div className="p-6 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-2xl font-bold mb-1 text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{startup.startup_name}</h3>
+                    <p className="text-slate-500 dark:text-slate-400 text-xs mb-3">Founded by <span className="text-slate-700 dark:text-slate-200 font-semibold">{startup.founder_name}</span></p>
+                    <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mb-6 line-clamp-2">{startup.description}</p>
+                  </div>
+
+                  <Link to={`/startups/${startup._id}`} className="block w-full text-center py-3.5 btn-primary text-sm font-bold shadow-lg shadow-indigo-600/20">
                     View Startup Details
                   </Link>
                 </div>
@@ -206,13 +228,63 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Live AI Demo Sandbox Section */}
+      <section className="py-24 bg-slate-50 dark:bg-[#07090F] text-slate-900 dark:text-white relative">
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-12 relative z-10">
+          <motion.div {...fadeUp} className="text-center max-w-3xl mx-auto mb-12">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 text-xs font-extrabold uppercase tracking-wider mb-4">
+              <FiZap /> Instant Playground
+            </span>
+            <h2 className="text-4xl md:text-6xl font-black mb-4">Test Gemini AI Co-Pilot Live</h2>
+            <p className="text-slate-600 dark:text-slate-400 text-lg">Experience how Gemini AI instantly crafts professional startup pitches in real-time right here.</p>
+          </motion.div>
+
+          <div className="max-w-4xl mx-auto p-8 rounded-3xl bg-white dark:bg-[#0B0E14] border border-slate-200 dark:border-indigo-500/20 shadow-2xl relative overflow-hidden">
+            <form onSubmit={handleLiveAIDemo} className="space-y-4">
+              <div>
+                <label className="block text-xs font-black text-indigo-600 dark:text-indigo-300 uppercase tracking-wider mb-2">
+                  Enter Your Startup Concept
+                </label>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <input
+                    type="text"
+                    value={demoPrompt}
+                    onChange={(e) => setDemoPrompt(e.target.value)}
+                    placeholder="Describe your startup idea in 1 line..."
+                    className="input-field flex-1 text-sm bg-slate-50 dark:bg-black/40"
+                  />
+                  <button
+                    type="submit"
+                    disabled={demoLoading}
+                    className="btn-ai px-6 py-3 font-bold text-sm shrink-0"
+                  >
+                    <FiZap /> {demoLoading ? 'AI Generating...' : 'Generate Pitch Live'}
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            {demoPitch && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-6 p-6 bg-slate-50 dark:bg-black/60 rounded-2xl border border-purple-500/30">
+                <div className="flex items-center gap-2 mb-2 text-purple-600 dark:text-purple-400 text-xs font-black uppercase tracking-wider">
+                  <FiCheckCircle /> Gemini AI Generated Output:
+                </div>
+                <p className="text-slate-800 dark:text-slate-200 text-sm leading-relaxed whitespace-pre-line font-mono bg-white dark:bg-slate-950/60 p-4 rounded-xl border border-slate-200 dark:border-white/5">
+                  {demoPitch}
+                </p>
+              </motion.div>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 text-white relative overflow-hidden">
+      <section className="py-24 bg-slate-900 dark:bg-[#07090F] text-white relative overflow-hidden border-t border-slate-800 dark:border-white/5">
         <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-          <h2 className="text-4xl md:text-6xl font-black mb-6">Ready to Build Something Great?</h2>
-          <p className="text-xl text-indigo-100 mb-10 max-w-2xl mx-auto">Join founders, engineers, and designers collaborating on high-impact projects.</p>
-          <Link to="/register" className="inline-flex items-center px-10 py-4 bg-white text-indigo-700 rounded-2xl font-black text-lg hover:bg-slate-100 transition-all shadow-2xl hover:scale-105">
-            Create Free Account <FiArrowRight className="ml-2" />
+          <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">{t('ctaTitle')}</h2>
+          <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">Join founders, engineers, and designers collaborating on high-impact projects.</p>
+          <Link to="/register" className="btn-ai text-lg px-10 py-4 mx-auto w-fit">
+            {t('register')} <FiArrowRight className="ml-2" />
           </Link>
         </div>
       </section>

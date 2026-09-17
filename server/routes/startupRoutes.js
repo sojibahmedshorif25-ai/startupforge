@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
   createStartup, getMyStartup, updateStartup, deleteStartup,
   getAllStartups, getStartupById, getFeaturedStartups,
-  adminGetAllStartups, adminApproveStartup, adminRemoveStartup
+  adminGetAllStartups, adminApproveStartup, adminRemoveStartup, upvoteStartup
 } from '../controllers/startupController.js';
 import { verifyToken, authorizeRoles } from '../middleware/auth.js';
 
@@ -14,6 +14,7 @@ router.get('/admin/all', verifyToken, authorizeRoles('admin'), adminGetAllStartu
 router.put('/admin/approve/:id', verifyToken, authorizeRoles('admin'), adminApproveStartup);
 router.delete('/admin/remove/:id', verifyToken, authorizeRoles('admin'), adminRemoveStartup);
 router.get('/:id', getStartupById);
+router.post('/:id/upvote', upvoteStartup);
 router.post('/', verifyToken, authorizeRoles('founder'), createStartup);
 router.get('/', verifyToken, authorizeRoles('founder'), getMyStartup);
 router.put('/:id', verifyToken, authorizeRoles('founder'), updateStartup);

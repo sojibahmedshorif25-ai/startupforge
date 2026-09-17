@@ -196,3 +196,32 @@ export const adminRemoveStartup = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+export const upvoteStartup = async (req, res) => {
+  try {
+    const userEmail = req.user?.email || 'guest';
+    if (mongoose.connection.readyState === 1) {
+      const startup = await Startup.findById(req.params.id);
+      if (!startup) return res.status(404).json({ message: 'Startup not found' });
+      const hasUpvoted = startup.upvoted_by?.includes(userEmail);
+      if (hasUpvoted) {
+        startup.upvotes = Math.max(0, (startup.upvotes || 1) - 1);
+        startup.upvoted_by = startup.upvoted_by.filter(e => e !== userEmail);
+      } else {
+        startup.upvotes = (startup.upvotes || 0) + 1;
+        startup.upvoted_by = [...(startup.upvoted_by || []), userEmail];
+      }
+      await startup.save();
+      return res.json({ upvotes: startup.upvotes, upvoted: !hasUpvoted });
+    }
+    const startup = mockStartups.find((s) => s._id === req.params.id);
+    if (startup) {
+      startup.upvotes = (startup.upvotes || 10) + 1;
+      return res.json({ upvotes: startup.upvotes, upvoted: true });
+    }
+    return res.status(404).json({ message: 'Startup not found' });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+

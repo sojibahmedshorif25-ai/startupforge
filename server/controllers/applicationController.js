@@ -3,7 +3,8 @@ import Application from '../models/Application.js';
 import Opportunity from '../models/Opportunity.js';
 import Startup from '../models/Startup.js';
 import User from '../models/User.js';
-import { mockApplications, mockOpportunities, mockStartups } from '../config/mockStore.js';
+import { mockApplications, mockOpportunities } from '../config/mockStore.js';
+import { createNotificationHelper } from './notificationController.js';
 
 export const applyToOpportunity = async (req, res) => {
   try {
@@ -15,13 +16,25 @@ export const applyToOpportunity = async (req, res) => {
         return res.status(400).json({ message: 'Already applied to this opportunity' });
       }
       const user = await User.findOne({ email: applicant_email });
+      const opportunity = await Opportunity.findById(opportunity_id).populate('startup_id');
       const application = await Application.create({
         opportunity_id,
         applicant_email,
-        applicant_name: user?.name || '',
+        applicant_name: user?.name || req.user?.name || '',
         portfolio_link: portfolio_link || '',
         motivation,
       });
+
+      if (opportunity && opportunity.startup_id && opportunity.startup_id.founder_email) {
+        await createNotificationHelper({
+          user_email: opportunity.startup_id.founder_email,
+          title: '🔔 New Application Received',
+          message: `${user?.name || applicant_email} applied for role: ${opportunity.role_title}`,
+          type: 'application_status',
+          link: '/dashboard/founder/applications',
+        });
+      }
+
       return res.status(201).json(application);
     }
 
@@ -58,7 +71,7 @@ export const getMyApplications = async (req, res) => {
       const applications = await Application.find({ applicant_email: req.user.email })
         .populate({
           path: 'opportunity_id',
-          populate: { path: 'startup_id', select: 'startup_name' },
+          populate: { path: 'startup_id', select: 'startup_name logo' },
         })
         .sort({ createdAt: -1 });
       return res.json(applications);
@@ -98,13 +111,39 @@ export const updateApplicationStatus = async (req, res) => {
   try {
     const { status } = req.body;
     if (mongoose.connection.readyState === 1) {
-      const application = await Application.findByIdAndUpdate(req.params.id, { status }, { new: true });
+      const application = await Application.findByIdAndUpdate(req.params.id, { status }, { new: true }).populate('opportunity_id');
       if (!application) return res.status(404).json({ message: 'Application not found' });
+
+      // Send notification to collaborator applicant
+      const roleName = application.opportunity_id?.role_title || 'Opportunity';
+      const statusTitle = status === 'accepted' ? '🎉 Application Accepted!' : 'Application Status Update';
+      const statusMessage =
+        status === 'accepted'
+          ? `Congratulations! Your application for "${roleName}" has been ACCEPTED by the founder.`
+          : `Your application for "${roleName}" has been updated to ${status.toUpperCase()}.`;
+
+      await createNotificationHelper({
+        user_email: application.applicant_email,
+        title: statusTitle,
+        message: statusMessage,
+        type: 'application_status',
+        link: '/dashboard/collaborator/applications',
+      });
+
       return res.json(application);
     }
 
     const app = mockApplications.find((a) => a._id === req.params.id);
-    if (app) app.status = status;
+    if (app) {
+      app.status = status;
+      await createNotificationHelper({
+        user_email: app.applicant_email,
+        title: status === 'accepted' ? '🎉 Application Accepted!' : 'Application Status Update',
+        message: `Your application status has been updated to ${status}.`,
+        type: 'application_status',
+        link: '/dashboard/collaborator/applications',
+      });
+    }
     return res.json(app);
   } catch (error) {
     return res.status(500).json({ message: error.message });

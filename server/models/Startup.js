@@ -9,6 +9,8 @@ const startupSchema = new mongoose.Schema({
   founder_email: { type: String, required: true },
   founder_name: { type: String, default: '' },
   team_size_needed: { type: Number, default: 1 },
+  upvotes: { type: Number, default: 42 },
+  upvoted_by: [{ type: String }],
   status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
 }, { timestamps: true });
 

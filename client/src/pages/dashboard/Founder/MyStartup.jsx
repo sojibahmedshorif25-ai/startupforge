@@ -65,11 +65,11 @@ export default function MyStartup() {
 
   const FormFields = ({ onSubmit, buttonText }) => (
     <form onSubmit={onSubmit} className="space-y-6">
-      <div className="flex items-center gap-5 p-4 rounded-2xl bg-slate-950 border border-slate-800">
+      <div className="flex items-center gap-5 p-4 rounded-2xl bg-white/5 border border-white/10 shadow-lg">
         <div className="relative shrink-0">
-          <div className="w-20 h-20 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center overflow-hidden">
+          <div className="w-20 h-20 rounded-2xl bg-[#07090F] border border-white/10 flex items-center justify-center overflow-hidden">
             {form.logo ? <img src={form.logo} alt="logo" className="w-full h-full object-cover" />
-              : <span className="text-3xl font-black text-[#a855f7]">{form.startup_name?.charAt(0) || '?'}</span>}
+              : <span className="text-3xl font-black text-[#a855f7] drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]">{form.startup_name?.charAt(0) || '?'}</span>}
           </div>
           <label className="absolute -bottom-1 -right-1 w-7 h-7 bg-purple-600 rounded-full flex items-center justify-center cursor-pointer hover:bg-purple-700 shadow-lg">
             <FiCamera className="text-white" size={12} />
@@ -131,7 +131,7 @@ export default function MyStartup() {
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-black mb-2 text-white">Create Startup Profile</h1>
         <p className="text-slate-400 mb-8">Set up your venture profile to post open positions</p>
-        <div className="p-8 rounded-3xl bg-[#12131e] border border-[#212338] shadow-2xl">
+        <div className="p-8 rounded-3xl premium-glass">
           <FormFields onSubmit={handleCreate} buttonText="Create Startup Profile" />
         </div>
       </motion.div>
@@ -139,9 +139,16 @@ export default function MyStartup() {
   }
 
   return (
-    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-[#12131e] border border-[#212338] shadow-2xl">
-        <div>
+    <div className="relative min-h-[80vh] overflow-hidden rounded-3xl p-4 -m-4">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[-20%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 rounded-full blur-[100px] mix-blend-screen animate-blob"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-indigo-600/10 rounded-full blur-[100px] mix-blend-screen animate-blob animation-delay-2000"></div>
+      </div>
+      
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 relative z-10">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl premium-glass relative overflow-hidden group">
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-indigo-500/5 group-hover:from-purple-500/10 group-hover:to-indigo-500/10 transition-colors duration-500"></div>
+        <div className="relative z-10">
           <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 text-xs font-black uppercase tracking-wider mb-2">
             <FiCheckCircle /> Verified Founder Profile
           </span>
@@ -149,7 +156,7 @@ export default function MyStartup() {
           <p className="text-slate-400 text-sm">Manage venture profile and funding information</p>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 relative z-10">
           <button onClick={() => navigate('/pricing')} className="btn-ai text-xs py-3 px-5 font-bold">
             <FiDollarSign /> Upgrade Pro
           </button>
@@ -167,7 +174,7 @@ export default function MyStartup() {
       </div>
 
       {editing ? (
-        <div className="p-8 rounded-3xl bg-[#12131e] border border-[#212338] shadow-2xl max-w-3xl">
+        <div className="p-8 rounded-3xl premium-glass max-w-3xl">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-white">Edit Startup Profile</h2>
             <button onClick={() => setEditing(false)} className="text-slate-400 hover:text-white"><FiX size={20} /></button>
@@ -175,10 +182,10 @@ export default function MyStartup() {
           <FormFields onSubmit={handleUpdate} buttonText="Save Startup Updates" />
         </div>
       ) : (
-        <div className="rounded-3xl bg-[#12131e] border border-[#212338] shadow-2xl overflow-hidden">
-          <div className="h-64 relative bg-slate-950">
+        <div className="rounded-3xl premium-glass overflow-hidden border border-white/10">
+          <div className="h-64 relative bg-[#07090F]">
             <img src={startup.logo} alt={startup.startup_name} className="w-full h-full object-cover opacity-90" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#12131e] via-[#12131e]/50 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0B0E14] via-[#0B0E14]/50 to-transparent"></div>
             
             <div className="absolute top-4 right-4 px-3.5 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider shadow-lg bg-emerald-950/80 text-emerald-400 border border-emerald-500/30">
               {startup.status === 'approved' ? '✓ Verified Active' : 'Pending Review'}
@@ -202,11 +209,11 @@ export default function MyStartup() {
             <p className="text-slate-300 leading-relaxed text-sm mb-8">{startup.description}</p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800">
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
                 <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">Team Roles Open</p>
                 <p className="text-2xl font-black text-white mt-1">{startup.team_size_needed} Members Needed</p>
               </div>
-              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800">
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
                 <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">Platform Status</p>
                 <p className="text-2xl font-black text-emerald-400 mt-1 capitalize">{startup.status}</p>
               </div>
@@ -214,6 +221,7 @@ export default function MyStartup() {
           </div>
         </div>
       )}
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }
