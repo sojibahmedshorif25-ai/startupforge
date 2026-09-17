@@ -41,6 +41,7 @@ export const register = async (req, res) => {
       });
       return res.status(201).json({
         message: 'User created successfully',
+        token,
         user: { id: user._id, name: user.name, email: user.email, image: user.image, role: user.role },
       });
     }
@@ -74,6 +75,7 @@ export const register = async (req, res) => {
     });
     return res.status(201).json({
       message: 'User created successfully',
+      token,
       user: { id: newUser._id, name: newUser.name, email: newUser.email, image: newUser.image, role: newUser.role },
     });
   } catch (error) {
@@ -109,6 +111,7 @@ export const login = async (req, res) => {
       });
       return res.json({
         message: 'Login successful',
+        token,
         user: { id: user._id, name: user.name, email: user.email, image: user.image, role: user.role },
       });
     }
@@ -134,6 +137,7 @@ export const login = async (req, res) => {
     });
     return res.json({
       message: 'Login successful',
+      token,
       user: { id: user._id, name: user.name, email: user.email, image: user.image, role: user.role },
     });
   } catch (error) {

@@ -71,11 +71,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const checkAuth = useCallback(async () => {
+    const token = localStorage.getItem('sf_token');
     try {
       const { data } = await api.get('/auth/me');
       setUser(data);
     } catch {
       setUser(null);
+      if (token) localStorage.removeItem('sf_token');
     } finally {
       setLoading(false);
     }
@@ -88,6 +90,9 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const { data } = await api.post('/auth/login', { email, password });
     if (!data.user) throw new Error('Invalid response');
+    if (data.token) {
+      localStorage.setItem('sf_token', data.token);
+    }
     setUser(data.user);
     return data;
   };
@@ -95,8 +100,26 @@ export const AuthProvider = ({ children }) => {
   const register = async (formData) => {
     const { data } = await api.post('/auth/register', formData);
     if (!data.user) throw new Error('Invalid response');
+    if (data.token) {
+      localStorage.setItem('sf_token', data.token);
+    }
     setUser(data.user);
     return data;
+  };
+
+  const demoGoogleLogin = async (role = 'collaborator') => {
+    const googleUser = {
+      name: 'Google User',
+      email: `google_${Date.now()}@gmail.com`,
+      password: 'GoogleLogin123!',
+      role,
+      image: 'https://lh3.googleusercontent.com/a/default-user',
+    };
+    try {
+      return await register(googleUser);
+    } catch {
+      return await login(googleUser.email, googleUser.password);
+    }
   };
 
   const logout = async () => {
@@ -105,6 +128,7 @@ export const AuthProvider = ({ children }) => {
     } catch {
       // ignore
     }
+    localStorage.removeItem('sf_token');
     setUser(null);
   };
 
@@ -115,6 +139,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         register,
+        demoGoogleLogin,
         logout,
         setUser,
         checkAuth,
