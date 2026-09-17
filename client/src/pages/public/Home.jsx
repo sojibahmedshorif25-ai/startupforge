@@ -31,8 +31,12 @@ export default function Home() {
   const [demoLoading, setDemoLoading] = useState(false);
 
   useEffect(() => {
-    api.get('/startups/featured').then(({ data }) => setStartups(data)).catch(() => {});
-    api.get('/opportunities/featured').then(({ data }) => setOpportunities(data)).catch(() => {});
+    api.get('/startups/featured')
+      .then(({ data }) => setStartups(Array.isArray(data) ? data : (data?.startups || data?.featured || [])))
+      .catch(() => setStartups([]));
+    api.get('/opportunities/featured')
+      .then(({ data }) => setOpportunities(Array.isArray(data) ? data : (data?.opportunities || data?.featured || [])))
+      .catch(() => setOpportunities([]));
   }, []);
 
   const handleUpvote = async (id, e) => {
@@ -40,7 +44,7 @@ export default function Home() {
     e.stopPropagation();
     try {
       const { data } = await api.post(`/startups/${id}/upvote`);
-      setStartups(startups.map(s => s._id === id ? { ...s, upvotes: data.upvotes } : s));
+      setStartups(prev => (Array.isArray(prev) ? prev : []).map(s => s._id === id ? { ...s, upvotes: data.upvotes } : s));
       toast.success(data.upvoted ? '🔥 Upvoted Startup!' : 'Upvote removed');
     } catch (err) {
       toast.error('Could not register upvote');
@@ -182,7 +186,7 @@ export default function Home() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {startups.slice(0, 3).map((startup, i) => (
+            {(Array.isArray(startups) ? startups : []).slice(0, 3).map((startup, i) => (
               <motion.div
                 key={startup._id}
                 initial={{ opacity: 0, y: 20 }}

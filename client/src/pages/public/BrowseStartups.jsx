@@ -24,7 +24,7 @@ export default function BrowseStartups() {
       const params = { page, limit: 9 };
       if (industry) params.industry = industry;
       const { data } = await api.get('/startups/all', { params });
-      let filtered = data.startups || [];
+      let filtered = Array.isArray(data) ? data : (data?.startups || []);
       if (search.trim()) {
         filtered = filtered.filter(s =>
           s.startup_name.toLowerCase().includes(search.toLowerCase()) ||
@@ -33,7 +33,7 @@ export default function BrowseStartups() {
         );
       }
       setStartups(filtered);
-      setTotalPages(data.pages || 1);
+      setTotalPages(data?.pages || 1);
     } catch {
       toast.error('Failed to load startups');
     } finally {
@@ -50,7 +50,7 @@ export default function BrowseStartups() {
     e.stopPropagation();
     try {
       const { data } = await api.post(`/startups/${id}/upvote`);
-      setStartups(startups.map(s => s._id === id ? { ...s, upvotes: data.upvotes } : s));
+      setStartups(prev => (Array.isArray(prev) ? prev : []).map(s => s._id === id ? { ...s, upvotes: data.upvotes } : s));
       toast.success(data.upvoted ? '🔥 Upvoted Startup!' : 'Upvote removed');
     } catch {
       toast.error('Could not register upvote');

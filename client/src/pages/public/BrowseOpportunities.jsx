@@ -52,8 +52,8 @@ export default function BrowseOpportunities() {
       if (workType) params.work_type = workType;
       if (industry) params.industry = industry;
       const { data } = await api.get('/opportunities/all', { params });
-      setOpportunities(data.opportunities || []);
-      setTotalPages(data.pages || 1);
+      setOpportunities(Array.isArray(data) ? data : (data?.opportunities || []));
+      setTotalPages(data?.pages || 1);
     } catch (err) {
       toast.error('Failed to load opportunities');
     } finally {
