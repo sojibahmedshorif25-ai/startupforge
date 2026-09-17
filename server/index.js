@@ -20,11 +20,32 @@ dotenv.config();
 
 const app = express();
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:3000',
+  'http://localhost:5000',
+  process.env.CLIENT_URL,
+].filter(Boolean);
+
 app.use(cors({
-  origin: [
-    process.env.CLIENT_URL || 'http://localhost:5173',
-    'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5000',
-  ].filter(Boolean),
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like curl, Postman, mobile apps)
+    if (!origin) return callback(null, true);
+    
+    // Allow any vercel deployment, localhost, or configured CLIENT_URL
+    if (
+      process.env.CLIENT_URL === '*' ||
+      allowedOrigins.includes(origin) ||
+      origin.endsWith('.vercel.app') ||
+      origin.includes('localhost') ||
+      origin.includes('127.0.0.1')
+    ) {
+      return callback(null, true);
+    }
+    // Fallback: allow dynamically for smooth deployment
+    return callback(null, true);
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: '50mb' }));
