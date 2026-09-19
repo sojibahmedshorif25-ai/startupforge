@@ -17,9 +17,12 @@ export default function Login() {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      await demoGoogleLogin('collaborator');
-      toast.success('Signed in with Google!');
-      navigate(from, { replace: true });
+      const res = await demoGoogleLogin('collaborator');
+      toast.success('Signed in with Google Account!');
+      const userRole = res?.user?.role || 'collaborator';
+      const defaultDashboard = userRole === 'founder' ? '/dashboard/founder' : '/dashboard/collaborator';
+      const targetPath = (from && from !== '/') ? from : defaultDashboard;
+      navigate(targetPath, { replace: true });
     } catch {
       toast.error('Google Sign-in failed');
     } finally {

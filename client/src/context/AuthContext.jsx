@@ -109,16 +109,16 @@ export const AuthProvider = ({ children }) => {
 
   const demoGoogleLogin = async (role = 'collaborator') => {
     const googleUser = {
-      name: 'Google User',
-      email: `google_${Date.now()}@gmail.com`,
+      name: 'Google Account User',
+      email: 'user.google@gmail.com',
       password: 'GoogleLogin123!',
       role,
       image: 'https://lh3.googleusercontent.com/a/default-user',
     };
     try {
-      return await register(googleUser);
-    } catch {
       return await login(googleUser.email, googleUser.password);
+    } catch {
+      return await register(googleUser);
     }
   };
 
