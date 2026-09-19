@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
-import { motion } from 'framer-motion';
-import { FiMail, FiLock, FiArrowRight, FiEye, FiEyeOff, FiZap, FiShield, FiUsers, FiBriefcase } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiMail, FiLock, FiArrowRight, FiEye, FiEyeOff, FiZap, FiShield, FiUsers, FiBriefcase, FiX, FiCheck } from 'react-icons/fi';
 
 export default function Login() {
-  const { login, demoGoogleLogin } = useAuth();
+  const { login, googleLogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || '/';
@@ -14,12 +14,29 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showPwd, setShowPwd] = useState(false);
 
-  const handleGoogleSignIn = async () => {
+  // Google Modal State
+  const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
+  const [googleForm, setGoogleForm] = useState({
+    email: '',
+    name: '',
+    role: 'collaborator',
+  });
+
+  const handleGoogleSignInSubmit = async (e) => {
+    if (e) e.preventDefault();
+    if (!googleForm.email || !googleForm.email.includes('@')) {
+      return toast.error('Please enter a valid Gmail address');
+    }
     setLoading(true);
     try {
-      const res = await demoGoogleLogin('collaborator');
-      toast.success('Signed in with Google Account!');
-      const userRole = res?.user?.role || 'collaborator';
+      const res = await googleLogin({
+        email: googleForm.email,
+        name: googleForm.name || googleForm.email.split('@')[0],
+        role: googleForm.role,
+      });
+      toast.success(`Signed in as ${googleForm.email}!`);
+      setIsGoogleModalOpen(false);
+      const userRole = res?.user?.role || googleForm.role;
       const defaultDashboard = userRole === 'founder' ? '/dashboard/founder' : '/dashboard/collaborator';
       const targetPath = (from && from !== '/') ? from : defaultDashboard;
       navigate(targetPath, { replace: true });
@@ -28,6 +45,10 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const selectQuickGoogleAccount = (accEmail, accName, accRole) => {
+    setGoogleForm({ email: accEmail, name: accName, role: accRole });
   };
 
   const handleSubmit = async (e) => {
@@ -87,7 +108,7 @@ export default function Login() {
         >
           <div>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-extrabold uppercase tracking-wider mb-6">
-              <FiZap /> 1-Click Recruiter Demo Mode
+              <FiZap /> Instant Google & Role Auth
             </div>
             <h1 className="text-4xl lg:text-5xl font-black tracking-tight mb-4 leading-tight">
               Welcome to <br />
@@ -138,10 +159,10 @@ export default function Login() {
           {/* 1-Click Google Login Button */}
           <button
             type="button"
-            onClick={handleGoogleSignIn}
-            className="w-full py-3.5 px-4 bg-white text-slate-900 border border-slate-300 rounded-2xl font-black text-sm flex items-center justify-center gap-3 hover:bg-slate-100 transition-all shadow-lg active:scale-98 mb-5"
+            onClick={() => setIsGoogleModalOpen(true)}
+            className="w-full py-3.5 px-4 bg-white text-slate-900 border border-slate-300 rounded-2xl font-black text-sm flex items-center justify-center gap-3 hover:bg-slate-100 transition-all shadow-lg active:scale-98 mb-5 group"
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
@@ -246,6 +267,145 @@ export default function Login() {
           </p>
         </motion.div>
       </div>
+
+      {/* Modern Google Account Selector Modal */}
+      <AnimatePresence>
+        {isGoogleModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-indigo-950/80 relative text-white"
+            >
+              <button
+                onClick={() => setIsGoogleModalOpen(false)}
+                className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors"
+              >
+                <FiX size={20} />
+              </button>
+
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg shrink-0">
+                  <svg className="w-7 h-7" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-white">Sign in with Google</h3>
+                  <p className="text-xs text-slate-400">Enter your custom Gmail or choose a preset</p>
+                </div>
+              </div>
+
+              {/* Quick Preset Chips */}
+              <div className="mb-5 p-3 rounded-2xl bg-slate-950 border border-slate-800">
+                <p className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-2">Quick Google Presets:</p>
+                <div className="space-y-1.5">
+                  {[
+                    { email: 'sharif.dev@gmail.com', name: 'Sharif Ahmed', role: 'collaborator' },
+                    { email: 'alex.tech@gmail.com', name: 'Alex Tech Vision', role: 'founder' },
+                    { email: 'john.developer@gmail.com', name: 'John Developer', role: 'collaborator' },
+                  ].map((acc, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => selectQuickGoogleAccount(acc.email, acc.name, acc.role)}
+                      className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all border ${
+                        googleForm.email === acc.email
+                          ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300'
+                          : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-850 hover:border-slate-700'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-black text-[10px]">
+                          {acc.name.charAt(0)}
+                        </span>
+                        <div className="text-left">
+                          <p className="text-xs font-bold text-white leading-none">{acc.name}</p>
+                          <p className="text-[10px] text-slate-400 mt-0.5">{acc.email}</p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 uppercase font-extrabold">
+                        {acc.role}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <form onSubmit={handleGoogleSignInSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-extrabold text-slate-300 mb-1.5 uppercase tracking-wider">Your Gmail Address</label>
+                  <input
+                    type="email"
+                    required
+                    value={googleForm.email}
+                    onChange={(e) => setGoogleForm({ ...googleForm, email: e.target.value })}
+                    className="input-field bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 text-sm"
+                    placeholder="e.g. your.email@gmail.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-extrabold text-slate-300 mb-1.5 uppercase tracking-wider">Full Name (Optional)</label>
+                  <input
+                    type="text"
+                    value={googleForm.name}
+                    onChange={(e) => setGoogleForm({ ...googleForm, name: e.target.value })}
+                    className="input-field bg-slate-950 border-slate-800 text-white placeholder:text-slate-500 text-sm"
+                    placeholder="e.g. Sharif Ahmed"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-extrabold text-slate-300 mb-1.5 uppercase tracking-wider">Google Role</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setGoogleForm({ ...googleForm, role: 'collaborator' })}
+                      className={`p-2.5 rounded-xl border font-bold text-xs transition-all ${
+                        googleForm.role === 'collaborator'
+                          ? 'border-indigo-500 bg-indigo-600/20 text-indigo-300'
+                          : 'border-slate-800 bg-slate-950 text-slate-400'
+                      }`}
+                    >
+                      Collaborator
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setGoogleForm({ ...googleForm, role: 'founder' })}
+                      className={`p-2.5 rounded-xl border font-bold text-xs transition-all ${
+                        googleForm.role === 'founder'
+                          ? 'border-indigo-500 bg-indigo-600/20 text-indigo-300'
+                          : 'border-slate-800 bg-slate-950 text-slate-400'
+                      }`}
+                    >
+                      Founder
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading || !googleForm.email}
+                  className="btn-primary w-full py-3.5 font-extrabold text-sm shadow-xl shadow-indigo-600/30 mt-2"
+                >
+                  {loading ? (
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  ) : (
+                    <>
+                      Sign In as {googleForm.email || 'Google User'} <FiArrowRight className="ml-1.5" />
+                    </>
+                  )}
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

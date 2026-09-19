@@ -157,15 +157,18 @@ export const logout = async (req, res) => {
 export const googleAuth = async (req, res) => {
   try {
     const { name, email, image, role } = req.body;
-    const userEmail = email || 'user.google@gmail.com';
-    const userName = name || 'Google Account User';
+    if (!email) {
+      return res.status(400).json({ message: 'Google email is required' });
+    }
+    const userEmail = email.trim().toLowerCase();
+    const userName = name?.trim() || userEmail.split('@')[0];
     const userRole = role || 'collaborator';
-    const userImage = image || 'https://lh3.googleusercontent.com/a/default-user';
+    const userImage = image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(userName)}`;
 
     if (mongoose.connection.readyState === 1) {
       let user = await User.findOne({ email: userEmail });
       if (!user) {
-        const dummyPassword = await bcrypt.hash('GoogleSecret123!', 10);
+        const dummyPassword = await bcrypt.hash(`Google_${Date.now()}_Secret!`, 10);
         user = await User.create({
           name: userName,
           email: userEmail,
@@ -189,7 +192,7 @@ export const googleAuth = async (req, res) => {
     }
 
     // Mock Fallback
-    let user = mockUsers.find((u) => u.email.toLowerCase() === userEmail.toLowerCase());
+    let user = mockUsers.find((u) => u.email.toLowerCase() === userEmail);
     if (!user) {
       user = {
         _id: `usr_g_${Date.now()}`,
@@ -199,8 +202,8 @@ export const googleAuth = async (req, res) => {
         role: userRole,
         isBlocked: false,
         isPremium: true,
-        skills: ['React', 'Node.js', 'Python'],
-        bio: 'Google Verified User on StartupForge',
+        skills: ['React', 'Node.js', 'JavaScript'],
+        bio: `${userName} - Verified Google Account on StartupForge`,
       };
       mockUsers.push(user);
     }

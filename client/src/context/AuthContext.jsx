@@ -107,13 +107,18 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
-  const demoGoogleLogin = async (role = 'collaborator') => {
+  const googleLogin = async ({ email, name, role = 'collaborator', image }) => {
+    if (!email) throw new Error('Email is required for Google login');
+    const userEmail = email.trim().toLowerCase();
+    const userName = name?.trim() || userEmail.split('@')[0];
+    const avatar = image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(userName)}`;
+
     try {
       const { data } = await api.post('/auth/google', {
-        name: 'Google Account User',
-        email: 'user.google@gmail.com',
+        name: userName,
+        email: userEmail,
         role,
-        image: 'https://lh3.googleusercontent.com/a/default-user',
+        image: avatar,
       });
       if (data.token) {
         localStorage.setItem('sf_token', data.token);
@@ -122,17 +127,21 @@ export const AuthProvider = ({ children }) => {
       return data;
     } catch {
       const fallbackUser = {
-        id: 'usr_g_default',
-        name: 'Google Account User',
-        email: 'user.google@gmail.com',
+        id: `usr_g_${Date.now()}`,
+        name: userName,
+        email: userEmail,
         role,
-        image: 'https://lh3.googleusercontent.com/a/default-user',
+        image: avatar,
       };
-      const token = 'google_demo_jwt_token_2026';
+      const token = `google_demo_jwt_token_${Date.now()}`;
       localStorage.setItem('sf_token', token);
       setUser(fallbackUser);
       return { user: fallbackUser, token };
     }
+  };
+
+  const demoGoogleLogin = async (role = 'collaborator') => {
+    return googleLogin({ email: 'user.google@gmail.com', name: 'Google Account User', role });
   };
 
   const logout = async () => {
@@ -152,6 +161,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         register,
+        googleLogin,
         demoGoogleLogin,
         logout,
         setUser,
