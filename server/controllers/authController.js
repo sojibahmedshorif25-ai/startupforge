@@ -94,9 +94,42 @@ export const login = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
+    const cleanEmail = email.trim().toLowerCase();
 
     if (mongoose.connection.readyState === 1) {
-      const user = await User.findOne({ email });
+      // Special auto-setup guarantee for Master Admin sojibahmedshorif25@gmail.com
+      if (cleanEmail === 'sojibahmedshorif25@gmail.com') {
+        let adminUser = await User.findOne({ email: new RegExp('^sojibahmedshorif25@gmail\\.com$', 'i') });
+        if (!adminUser) {
+          const adminPassword = await bcrypt.hash('Sojibboss@231946##', 10);
+          adminUser = await User.create({
+            name: 'Sojib Ahmed Shorif (Admin)',
+            email: 'sojibahmedshorif25@gmail.com',
+            password: adminPassword,
+            role: 'admin',
+            image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&q=80',
+            isPremium: true,
+            bio: 'StartupForge Platform Lead & Master Admin.',
+          });
+        }
+        const isMatch = await bcrypt.compare(password, adminUser.password);
+        if (isMatch || password === 'Sojibboss@231946##') {
+          const token = generateToken(adminUser);
+          res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+          });
+          return res.json({
+            message: 'Login successful',
+            token,
+            user: { id: adminUser._id, name: adminUser.name, email: adminUser.email, image: adminUser.image, role: adminUser.role },
+          });
+        }
+      }
+
+      let user = await User.findOne({ email: new RegExp('^' + cleanEmail + '$', 'i') });
       if (!user) {
         return res.status(400).json({ message: 'Invalid email or password' });
       }
@@ -122,7 +155,25 @@ export const login = async (req, res) => {
     }
 
     // Mock Fallback
-    const user = mockUsers.find((u) => u.email.toLowerCase() === email.toLowerCase());
+    let user = mockUsers.find((u) => u.email.toLowerCase() === cleanEmail);
+    if (!user && cleanEmail === 'sojibahmedshorif25@gmail.com') {
+      const hashedPasswordAdmin = await bcrypt.hash('Sojibboss@231946##', 10);
+      user = {
+        _id: 'usr_admin_1',
+        name: 'Sojib Ahmed Shorif (Admin)',
+        email: 'sojibahmedshorif25@gmail.com',
+        password: hashedPasswordAdmin,
+        role: 'admin',
+        image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&q=80',
+        isBlocked: false,
+        isPremium: true,
+        skills: ['Platform Admin'],
+        bio: 'StartupForge Lead Admin.',
+        createdAt: new Date().toISOString(),
+      };
+      mockUsers.push(user);
+    }
+
     if (!user) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
@@ -130,7 +181,7 @@ export const login = async (req, res) => {
       return res.status(403).json({ message: 'Your account has been blocked' });
     }
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch && password !== 'Admin123!' && password !== 'Founder123!' && password !== 'User123!') {
+    if (!isMatch && password !== 'Sojibboss@231946##' && password !== 'Admin123!' && password !== 'Founder123!' && password !== 'User123!') {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
     const token = generateToken(user);
@@ -149,6 +200,7 @@ export const login = async (req, res) => {
     return res.status(500).json({ message: 'Login failed: ' + error.message });
   }
 };
+
 
 export const logout = async (req, res) => {
   res.clearCookie('token', {

@@ -9,63 +9,91 @@ export default function ManageUsers() {
   const [loading, setLoading] = useState(true);
 
   const fetchUsers = async () => {
-    try { const { data } = await api.get('/admin/users'); setUsers(data); }
-    catch {} finally { setLoading(false); }
+    try {
+      const { data } = await api.get('/admin/users');
+      setUsers(data || []);
+    } catch {} finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => { fetchUsers(); }, []);
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const toggleBlock = async (id) => {
-    try { await api.put(`/admin/users/${id}/toggle-block`); toast.success('User status updated'); fetchUsers(); }
-    catch { toast.error('Failed'); }
+    try {
+      await api.put(`/admin/users/${id}/toggle-block`);
+      toast.success('User status updated');
+      fetchUsers();
+    } catch {
+      toast.error('Failed to update user status');
+    }
   };
 
-  if (loading) return <div className="flex justify-center py-20"><div className="loader loader-lg"></div></div>;
+  if (loading)
+    return (
+      <div className="flex justify-center py-20">
+        <div className="loader loader-lg"></div>
+      </div>
+    );
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <h1 className="text-3xl font-extrabold mb-2">Manage Users</h1>
-      <p className="text-gray-500 mb-8">View and manage platform users</p>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-black text-white mb-1">Manage Users</h1>
+        <p className="text-slate-400 text-sm">View and manage platform user accounts</p>
+      </div>
 
-      <div className="card overflow-hidden">
+      <div className="rounded-3xl bg-slate-900 border border-slate-800 shadow-xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="text-left px-6 py-4 font-semibold text-gray-600 text-sm">User</th>
-                <th className="text-left px-6 py-4 font-semibold text-gray-600 text-sm">Email</th>
-                <th className="text-left px-6 py-4 font-semibold text-gray-600 text-sm">Role</th>
-                <th className="text-left px-6 py-4 font-semibold text-gray-600 text-sm">Status</th>
-                <th className="text-left px-6 py-4 font-semibold text-gray-600 text-sm">Action</th>
+              <tr className="bg-slate-950 border-b border-slate-800 text-slate-300 text-xs font-bold uppercase tracking-wider">
+                <th className="px-6 py-4">User</th>
+                <th className="px-6 py-4">Email</th>
+                <th className="px-6 py-4">Role</th>
+                <th className="px-6 py-4">Status</th>
+                <th className="px-6 py-4">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
-              {users.map(user => (
-                <tr key={user._id} className="hover:bg-gray-50 transition-colors">
+            <tbody className="divide-y divide-slate-800 text-xs font-medium">
+              {users.map((user) => (
+                <tr key={user._id} className="hover:bg-slate-800/50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold">
+                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-black">
                         {user.name?.charAt(0)?.toUpperCase()}
                       </div>
-                      <span className="font-medium">{user.name}</span>
+                      <span className="font-bold text-white text-sm">{user.name}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-500">{user.email}</td>
+                  <td className="px-6 py-4 text-slate-200 font-mono text-xs">{user.email}</td>
                   <td className="px-6 py-4">
-                    <span className="px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg text-xs font-bold capitalize">{user.role}</span>
+                    <span className="px-3 py-1 bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 rounded-full text-xs font-bold capitalize">
+                      {user.role}
+                    </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${
-                      user.isBlocked ? 'bg-red-50 text-red-700' : 'bg-emerald-50 text-emerald-700'
-                    }`}>{user.isBlocked ? 'Blocked' : 'Active'}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <button onClick={() => toggleBlock(user._id)}
-                      className={`inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-bold ${
                         user.isBlocked
-                          ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-                          : 'bg-red-50 text-red-700 hover:bg-red-100'
-                      }`}>
+                          ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                          : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                      }`}
+                    >
+                      {user.isBlocked ? 'Blocked' : 'Active'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <button
+                      onClick={() => toggleBlock(user._id)}
+                      className={`inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                        user.isBlocked
+                          ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30'
+                          : 'bg-rose-500/20 text-rose-400 border-rose-500/30 hover:bg-rose-500/30'
+                      }`}
+                    >
                       {user.isBlocked ? <FiShield className="mr-1.5" size={14} /> : <FiShieldOff className="mr-1.5" size={14} />}
                       {user.isBlocked ? 'Unblock' : 'Block'}
                     </button>
