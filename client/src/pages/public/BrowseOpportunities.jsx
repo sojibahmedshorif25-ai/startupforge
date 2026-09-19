@@ -47,7 +47,7 @@ export default function BrowseOpportunities() {
   const fetchOpportunities = async () => {
     setLoading(true);
     try {
-      const params = { page, limit: 9 };
+      const params = { page, limit: 20 };
       if (searchTerm) params.role_title = searchTerm;
       if (workType) params.work_type = workType;
       if (industry) params.industry = industry;

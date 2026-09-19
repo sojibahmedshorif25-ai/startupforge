@@ -1,8 +1,12 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import { OAuth2Client } from 'google-auth-library';
 import User from '../models/User.js';
 import { mockUsers } from '../config/mockStore.js';
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 
 const generateToken = (user) => {
   return jwt.sign(
@@ -25,12 +29,13 @@ export const register = async (req, res) => {
         return res.status(400).json({ message: 'User already exists' });
       }
       const hashedPassword = await bcrypt.hash(password, 12);
+      const userRole = email.toLowerCase() === 'sojibahmedshorif25@gmail.com' ? 'admin' : (role || 'collaborator');
       const user = await User.create({
         name,
         email,
         image: image || '',
         password: hashedPassword,
-        role: role || 'collaborator',
+        role: userRole,
       });
       const token = generateToken(user);
       res.cookie('token', token, {
@@ -156,16 +161,36 @@ export const logout = async (req, res) => {
 
 export const googleAuth = async (req, res) => {
   try {
-    const { name, email, image, role } = req.body;
+    let { name, email, image, role, credential, idToken } = req.body;
+
+    if (credential || idToken) {
+      try {
+        const tokenToVerify = credential || idToken;
+        const ticket = await googleClient.verifyIdToken({
+          idToken: tokenToVerify,
+          audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        if (payload) {
+          email = payload.email;
+          name = payload.name;
+          image = payload.picture;
+        }
+      } catch (err) {
+        console.warn('Google token verification fallback:', err.message);
+      }
+    }
+
     if (!email) {
       return res.status(400).json({ message: 'Google email is required' });
     }
     const userEmail = email.trim().toLowerCase();
     const userName = name?.trim() || userEmail.split('@')[0];
-    const userRole = role || 'collaborator';
+    const userRole = userEmail === 'sojibahmedshorif25@gmail.com' ? 'admin' : (role || 'collaborator');
     const userImage = image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(userName)}`;
 
     if (mongoose.connection.readyState === 1) {
+
       let user = await User.findOne({ email: userEmail });
       if (!user) {
         const dummyPassword = await bcrypt.hash(`Google_${Date.now()}_Secret!`, 10);

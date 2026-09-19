@@ -107,18 +107,18 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
-  const googleLogin = async ({ email, name, role = 'collaborator', image }) => {
-    if (!email) throw new Error('Email is required for Google login');
-    const userEmail = email.trim().toLowerCase();
-    const userName = name?.trim() || userEmail.split('@')[0];
-    const avatar = image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(userName)}`;
-
+  const googleLogin = async ({ email, name, role = 'collaborator', image, credential }) => {
     try {
+      const userEmail = email ? email.trim().toLowerCase() : undefined;
+      const userName = name?.trim() || (userEmail ? userEmail.split('@')[0] : 'Google User');
+      const avatar = image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(userName)}`;
+
       const { data } = await api.post('/auth/google', {
         name: userName,
         email: userEmail,
         role,
         image: avatar,
+        credential,
       });
       if (data.token) {
         localStorage.setItem('sf_token', data.token);
@@ -126,10 +126,13 @@ export const AuthProvider = ({ children }) => {
       setUser(data.user);
       return data;
     } catch {
+      const fallbackEmail = email || 'google.user@gmail.com';
+      const fallbackName = name || 'Google Account User';
+      const avatar = image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(fallbackName)}`;
       const fallbackUser = {
         id: `usr_g_${Date.now()}`,
-        name: userName,
-        email: userEmail,
+        name: fallbackName,
+        email: fallbackEmail,
         role,
         image: avatar,
       };
@@ -139,6 +142,7 @@ export const AuthProvider = ({ children }) => {
       return { user: fallbackUser, token };
     }
   };
+
 
   const demoGoogleLogin = async (role = 'collaborator') => {
     return googleLogin({ email: 'user.google@gmail.com', name: 'Google Account User', role });

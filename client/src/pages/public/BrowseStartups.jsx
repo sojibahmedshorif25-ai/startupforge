@@ -21,7 +21,7 @@ export default function BrowseStartups() {
   const fetchStartups = async () => {
     setLoading(true);
     try {
-      const params = { page, limit: 9 };
+      const params = { page, limit: 20 };
       if (industry) params.industry = industry;
       const { data } = await api.get('/startups/all', { params });
       let filtered = Array.isArray(data) ? data : (data?.startups || []);
@@ -62,7 +62,8 @@ export default function BrowseStartups() {
       {/* Header Banner */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 text-center max-w-3xl mx-auto">
         <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 text-xs font-extrabold uppercase tracking-wider mb-4">
-          <FiTrendingUp /> 15+ Verified Venture Backed Startups
+          <FiTrendingUp /> 20+ Verified Venture Backed Startups
+
         </span>
         <h1 className="text-4xl md:text-6xl font-black mb-4 text-slate-900 dark:text-white tracking-tight">
           {t('startups')}

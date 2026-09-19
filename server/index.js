@@ -70,6 +70,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Mount with /api prefix
 app.use('/api/auth', authRoutes);
 app.use('/api/startups', startupRoutes);
 app.use('/api/opportunities', opportunityRoutes);
@@ -82,6 +83,21 @@ app.use('/api/bookmarks', bookmarkRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/network', networkRoutes);
 app.use('/api/community', communityRoutes);
+
+// Also mount directly without /api prefix for maximum compatibility
+app.use('/auth', authRoutes);
+app.use('/startups', startupRoutes);
+app.use('/opportunities', opportunityRoutes);
+app.use('/applications', applicationRoutes);
+app.use('/payments', paymentRoutes);
+app.use('/admin', adminRoutes);
+app.use('/users', userRoutes);
+app.use('/ai', aiRoutes);
+app.use('/bookmarks', bookmarkRoutes);
+app.use('/notifications', notificationRoutes);
+app.use('/network', networkRoutes);
+app.use('/community', communityRoutes);
+
 
 app.use(errorHandler);
 
