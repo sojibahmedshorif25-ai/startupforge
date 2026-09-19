@@ -159,7 +159,22 @@ export default function Login() {
           {/* 1-Click Google Login Button */}
           <button
             type="button"
-            onClick={() => setIsGoogleModalOpen(true)}
+            onClick={() => {
+              const width = 500;
+              const height = 600;
+              const left = window.screenX + (window.outerWidth - width) / 2;
+              const top = window.screenY + (window.outerHeight - height) / 2;
+              try {
+                window.open(
+                  'https://accounts.google.com/gsi/select',
+                  'GoogleLogin',
+                  `width=${width},height=${height},left=${left},top=${top}`
+                );
+              } catch {
+                // ignore popup blocker
+              }
+              setIsGoogleModalOpen(true);
+            }}
             className="w-full py-3.5 px-4 bg-white text-slate-900 border border-slate-300 rounded-2xl font-black text-sm flex items-center justify-center gap-3 hover:bg-slate-100 transition-all shadow-lg active:scale-98 mb-5 group"
           >
             <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">

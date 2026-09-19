@@ -5,6 +5,8 @@ import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { FiUser, FiMail, FiLock, FiCamera, FiArrowRight, FiEye, FiEyeOff, FiCheck, FiBriefcase, FiZap } from 'react-icons/fi';
 
+import { uploadImageToCloud } from '../../utils/imageUpload';
+
 export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -18,14 +20,9 @@ export default function Register() {
     const file = e.target.files[0];
     if (!file) return;
     try {
-      const formData = new FormData();
-      formData.append('image', file);
-      const res = await fetch(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_KEY}`, {
-        method: 'POST', body: formData,
-      });
-      const data = await res.json();
-      if (data.success) {
-        setForm({ ...form, image: data.data.url });
+      const url = await uploadImageToCloud(file);
+      if (url) {
+        setForm((prev) => ({ ...prev, image: url }));
         toast.success('Image uploaded!');
       } else {
         toast.error('Image upload failed.');

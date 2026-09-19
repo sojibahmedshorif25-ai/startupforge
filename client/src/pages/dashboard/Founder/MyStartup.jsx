@@ -5,6 +5,8 @@ import api from '../../../lib/axios';
 import toast from 'react-hot-toast';
 import { FiEdit2, FiTrash2, FiSave, FiX, FiCamera, FiDollarSign, FiZap, FiCheckCircle } from 'react-icons/fi';
 
+import { uploadImageToCloud } from '../../../utils/imageUpload';
+
 export default function MyStartup() {
   const navigate = useNavigate();
   const [startup, setStartup] = useState(null);
@@ -24,10 +26,13 @@ export default function MyStartup() {
     const file = e.target.files[0];
     if (!file) return;
     try {
-      const fd = new FormData(); fd.append('image', file);
-      const res = await fetch(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_KEY}`, { method: 'POST', body: fd });
-      const data = await res.json();
-      if (data.success) { setForm({ ...form, logo: data.data.url }); toast.success('Logo uploaded!'); }
+      const url = await uploadImageToCloud(file);
+      if (url) {
+        setForm((prev) => ({ ...prev, logo: url }));
+        toast.success('Logo uploaded!');
+      } else {
+        toast.error('Upload failed');
+      }
     } catch { toast.error('Upload failed'); }
   };
 

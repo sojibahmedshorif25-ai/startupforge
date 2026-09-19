@@ -5,6 +5,8 @@ import api from '../../lib/axios';
 import toast from 'react-hot-toast';
 import { FiCamera, FiSave, FiUser, FiZap } from 'react-icons/fi';
 
+import { uploadImageToCloud } from '../../utils/imageUpload';
+
 export default function Profile() {
   const { user, checkAuth } = useAuth();
   const [form, setForm] = useState({
@@ -20,15 +22,9 @@ export default function Profile() {
     const file = e.target.files[0];
     if (!file) return;
     try {
-      const fd = new FormData();
-      fd.append('image', file);
-      const res = await fetch(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_KEY}`, {
-        method: 'POST',
-        body: fd,
-      });
-      const data = await res.json();
-      if (data.success) {
-        setForm({ ...form, image: data.data.url });
+      const url = await uploadImageToCloud(file);
+      if (url) {
+        setForm((prev) => ({ ...prev, image: url }));
         toast.success('Image uploaded!');
       } else {
         toast.error('Image upload failed');
