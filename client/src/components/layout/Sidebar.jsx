@@ -55,10 +55,11 @@ export default function Sidebar() {
 
   return (
     <>
-      <motion.div
-        animate={{ width: collapsed ? 80 : 260 }}
-        className="fixed left-0 top-0 h-full bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white z-40 hidden md:flex flex-col shadow-2xl transition-all duration-300"
-      >
+      <aside className="hidden md:flex fixed left-0 top-0 h-full z-40">
+        <motion.div
+          animate={{ width: collapsed ? 80 : 260 }}
+          className="h-full bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white flex flex-col shadow-2xl transition-all duration-300"
+        >
         {/* Brand Header */}
         <div className={`p-5 flex items-center border-b border-slate-200 dark:border-slate-800 ${collapsed ? 'justify-center' : 'justify-between'}`}>
           {!collapsed ? (
@@ -157,6 +158,7 @@ export default function Sidebar() {
           </button>
         </div>
       </motion.div>
+    </aside>
 
       {/* Mobile Nav */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 text-slate-800 dark:text-white z-40 flex justify-around py-2.5 border-t border-slate-200 dark:border-slate-800">
