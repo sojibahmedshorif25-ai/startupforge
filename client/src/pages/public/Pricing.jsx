@@ -51,13 +51,13 @@ export default function Pricing() {
     <div className="max-w-[1600px] mx-auto px-6 lg:px-12 py-16">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-3xl mx-auto mb-16">
-        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 text-xs font-extrabold uppercase tracking-wider mb-4">
+        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-xs font-extrabold uppercase tracking-wider mb-4">
           <FiStar className="text-amber-400" /> Flexible Pricing for Founders & Teams
         </span>
-        <h1 className="text-4xl md:text-6xl font-black mb-4 text-white tracking-tight">
+        <h1 className="text-4xl md:text-6xl font-black mb-4 text-slate-900 dark:text-white tracking-tight">
           Simple, Transparent <span className="gradient-text">Pricing Plans</span>
         </h1>
-        <p className="text-slate-400 text-lg leading-relaxed">
+        <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed">
           Scale your startup recruitment with AI-driven co-pilot tools, unlimited job postings, and Stripe-powered payments.
         </p>
       </motion.div>
@@ -69,37 +69,37 @@ export default function Pricing() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="card p-8 md:p-10 flex flex-col justify-between"
+          className="p-8 md:p-10 rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl flex flex-col justify-between"
         >
           <div>
-            <span className="px-3 py-1 bg-white/5 text-slate-300 rounded-full text-xs font-extrabold uppercase tracking-wider mb-4 inline-block border border-white/10">
+            <span className="px-3.5 py-1 bg-slate-800 text-slate-300 rounded-full text-xs font-extrabold uppercase tracking-wider mb-4 inline-block border border-slate-700">
               Free Collaborator
             </span>
-            <h3 className="text-3xl font-extrabold text-white mb-2">Free Starter</h3>
+            <h3 className="text-3xl font-black text-white mb-2">Free Starter</h3>
             <p className="text-slate-400 text-sm mb-6">Perfect for collaborators, engineers, and early-stage researchers.</p>
 
             <div className="flex items-baseline gap-1 mb-8">
               <span className="text-5xl font-black text-white">$0</span>
-              <span className="text-slate-500 text-sm font-semibold">/ forever</span>
+              <span className="text-slate-400 text-sm font-semibold">/ forever</span>
             </div>
 
-            <ul className="space-y-4 text-sm text-slate-300 mb-8">
+            <ul className="space-y-4 text-sm text-slate-200 mb-8">
               {[
-                'Browse 15+ verified tech startups',
+                'Browse 20+ verified tech startups',
                 'Apply to unlimited open positions',
                 'AI Skill Match Analysis (% score)',
                 'AI Profile Bio Generator',
                 'Up to 3 free job opportunity postings',
               ].map((feat, i) => (
                 <li key={i} className="flex items-center gap-3">
-                  <FiCheck className="text-emerald-500 shrink-0" size={18} />
+                  <FiCheck className="text-emerald-400 shrink-0" size={18} />
                   <span>{feat}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <Link to="/register" className="btn-secondary py-4 w-full text-center font-bold">
+          <Link to="/register" className="btn-secondary py-4 w-full text-center font-bold shadow-lg">
             Get Started Free
           </Link>
         </motion.div>
@@ -109,74 +109,73 @@ export default function Pricing() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="relative p-[2px] rounded-3xl overflow-hidden group"
+          className="relative p-[2px] rounded-3xl overflow-hidden group shadow-2xl"
         >
           {/* Animated gradient border */}
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-indigo-500 to-pink-500 animate-border-spin opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-indigo-500 to-pink-500 opacity-75 group-hover:opacity-100 transition-opacity duration-500"></div>
           
-          <div className="card h-full p-8 md:p-10 flex flex-col justify-between relative z-10 bg-[#0B0E14] border-0">
-          <div className="absolute top-0 right-0 px-4 py-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-[11px] font-black uppercase tracking-wider rounded-bl-2xl shadow-lg">
-            Most Popular
-          </div>
-
-          <div>
-            <span className="px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-xs font-extrabold uppercase tracking-wider mb-4 inline-block border border-indigo-500/30">
-              Pro Founder Plan
-            </span>
-            <h3 className="text-3xl font-black text-white mb-2">Pro Founder & Unlimited</h3>
-            <p className="text-slate-400 text-sm mb-6">Built for ambitious founders scaling their founding teams rapidly.</p>
-
-            <div className="flex items-baseline gap-1 mb-8">
-              <span className="text-5xl font-black text-white">$19.99</span>
-              <span className="text-slate-400 text-sm font-semibold">/ one-time</span>
+          <div className="h-full p-8 md:p-10 flex flex-col justify-between relative z-10 bg-slate-900 border-0 rounded-3xl">
+            <div className="absolute top-0 right-0 px-4 py-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-[11px] font-black uppercase tracking-wider rounded-bl-2xl shadow-lg">
+              Most Popular
             </div>
 
-            <ul className="space-y-4 text-sm text-slate-300 mb-8">
-              {[
-                'Unlimited opportunity job postings',
-                'Gemini AI Pitch & Requirement Generator',
-                'Instant AI Motivation Letter autocompletion',
-                'Featured Startup Gold Badge on browse views',
-                'Priority applicant candidate matching',
-                'Stripe Secure Instant Payment Guarantee',
-              ].map((feat, i) => (
-                <li key={i} className="flex items-center gap-3">
-                  <FiCheck className="text-indigo-400 shrink-0" size={18} />
-                  <span>{feat}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+            <div>
+              <span className="px-3.5 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-xs font-extrabold uppercase tracking-wider mb-4 inline-block border border-indigo-500/30">
+                Pro Founder Plan
+              </span>
+              <h3 className="text-3xl font-black text-white mb-2">Pro Founder & Unlimited</h3>
+              <p className="text-slate-400 text-sm mb-6">Built for ambitious founders scaling their founding teams rapidly.</p>
 
-          <div className="space-y-3">
-            <button
-              onClick={handleStripeCheckout}
-              disabled={loading}
-              className="btn-primary py-4 w-full justify-center font-black text-base shadow-xl shadow-indigo-600/40"
-            >
-              <FiCreditCard className="mr-2" size={18} /> Pay $19.99 via Stripe
-            </button>
-            <button
-              onClick={handleDemoUpgrade}
-              disabled={loading}
-              className="w-full py-2.5 premium-glass text-indigo-300 hover:text-white hover:bg-white/10 rounded-xl text-xs font-bold transition-all text-center border border-indigo-500/30 mt-2"
-            >
-              ⚡ 1-Click Instant Demo Payment Simulation
-            </button>
-          </div>
+              <div className="flex items-baseline gap-1 mb-8">
+                <span className="text-5xl font-black text-white">$19.99</span>
+                <span className="text-slate-400 text-sm font-semibold">/ one-time</span>
+              </div>
+
+              <ul className="space-y-4 text-sm text-slate-200 mb-8">
+                {[
+                  'Unlimited opportunity job postings',
+                  'Gemini AI Pitch & Requirement Generator',
+                  'Instant AI Motivation Letter autocompletion',
+                  'Featured Startup Gold Badge on browse views',
+                  'Priority applicant candidate matching',
+                  'Stripe Secure Instant Payment Guarantee',
+                ].map((feat, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <FiCheck className="text-indigo-400 shrink-0" size={18} />
+                    <span>{feat}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="space-y-3">
+              <button
+                onClick={handleStripeCheckout}
+                disabled={loading}
+                className="btn-primary py-4 w-full justify-center font-black text-base shadow-xl shadow-indigo-600/40"
+              >
+                <FiCreditCard className="mr-2" size={18} /> Pay $19.99 via Stripe
+              </button>
+              <button
+                onClick={handleDemoUpgrade}
+                disabled={loading}
+                className="w-full py-2.5 bg-slate-800 text-indigo-300 hover:text-white hover:bg-slate-700 rounded-xl text-xs font-bold transition-all text-center border border-indigo-500/30 mt-2"
+              >
+                ⚡ 1-Click Instant Demo Payment Simulation
+              </button>
+            </div>
           </div>
         </motion.div>
       </div>
 
       {/* Trust & Guarantee */}
-      <div className="premium-glass p-8 rounded-3xl text-white max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden group">
-        <div className="absolute inset-0 bg-indigo-500/5 group-hover:bg-indigo-500/10 transition-colors"></div>
-        <div className="flex items-center gap-4 relative z-10">
+      <div className="p-8 rounded-3xl bg-slate-900 border border-slate-800 text-white max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+        <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
             <FiShield size={28} />
           </div>
           <div>
-            <h4 className="text-lg font-bold">Stripe 256-Bit Encrypted Payments</h4>
+            <h4 className="text-lg font-bold text-white">Stripe 256-Bit Encrypted Payments</h4>
             <p className="text-xs text-slate-400">All transactions are processed through Stripe with end-to-end encryption.</p>
           </div>
         </div>
