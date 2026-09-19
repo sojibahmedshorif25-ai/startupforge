@@ -49,24 +49,24 @@ const PrivateRoute = ({ children, roles }) => {
 };
 
 const PublicLayout = ({ children }) => (
-  <>
+  <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300 overflow-x-hidden">
     <Navbar />
-    <main className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+    <main className="flex-1 w-full max-w-full overflow-x-hidden">
       {children}
     </main>
     <AIChatWidget />
     <Footer />
-  </>
+  </div>
 );
 
 const DashboardLayout = ({ children, allowedRoles }) => {
   const { user } = useAuth();
   if (allowedRoles && !allowedRoles.includes(user?.role)) return <Navigate to="/" />;
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300 overflow-x-hidden">
       <Sidebar />
-      <div className="flex-1 md:ml-64 pb-24 md:pb-8">
-        <div className="p-4 md:p-8 max-w-7xl mx-auto">{children}</div>
+      <div className="flex-1 min-w-0 md:ml-64 pb-24 md:pb-8 w-full">
+        <div className="p-3 sm:p-6 md:p-8 max-w-7xl mx-auto w-full min-w-0">{children}</div>
       </div>
       <AIChatWidget />
     </div>

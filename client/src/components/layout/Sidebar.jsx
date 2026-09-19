@@ -14,32 +14,32 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
 
   const founderLinks = [
-    { to: '/dashboard/founder', label: t('overview'), icon: FiHome },
-    { to: '/dashboard/founder/my-startup', label: t('myStartup'), icon: FiBriefcase },
-    { to: '/dashboard/founder/add-opportunity', label: t('addPosition'), icon: FiPlusCircle },
-    { to: '/dashboard/founder/manage-opportunities', label: t('managePositions'), icon: FiList },
-    { to: '/dashboard/founder/applications', label: t('applications'), icon: FiUsers },
-    { to: '/dashboard/founder/analytics', label: t('analytics'), icon: FiTrendingUp },
-    { to: '/pricing', label: t('pricing'), icon: FiStar },
+    { to: '/dashboard/founder', label: t('overview'), shortLabel: t('overview'), icon: FiHome },
+    { to: '/dashboard/founder/my-startup', label: t('myStartup'), shortLabel: t('startups'), icon: FiBriefcase },
+    { to: '/dashboard/founder/add-opportunity', label: t('addPosition'), shortLabel: t('addPosition'), icon: FiPlusCircle },
+    { to: '/dashboard/founder/manage-opportunities', label: t('managePositions'), shortLabel: t('positions'), icon: FiList },
+    { to: '/dashboard/founder/applications', label: t('applications'), shortLabel: t('applications'), icon: FiUsers },
+    { to: '/dashboard/founder/analytics', label: t('analytics'), shortLabel: t('analytics'), icon: FiTrendingUp },
+    { to: '/pricing', label: t('pricing'), shortLabel: t('pricing'), icon: FiStar },
   ];
 
   const collaboratorLinks = [
-    { to: '/dashboard/collaborator', label: t('overview'), icon: FiHome },
-    { to: '/opportunities', label: t('findOpportunities'), icon: FiShoppingBag },
-    { to: '/dashboard/ai-match', label: t('aiMatcher'), icon: FiZap },
-    { to: '/dashboard/resume-analyzer', label: t('resumeAnalyzer'), icon: FiFileText },
-    { to: '/dashboard/ai-assistant', label: t('aiAssistant'), icon: FiMessageCircle },
-    { to: '/dashboard/collaborator/applications', label: t('applications'), icon: FiList },
-    { to: '/dashboard/bookmarks', label: t('bookmarks'), icon: FiBookmark },
+    { to: '/dashboard/collaborator', label: t('overview'), shortLabel: t('overview'), icon: FiHome },
+    { to: '/opportunities', label: t('findOpportunities'), shortLabel: t('positions'), icon: FiShoppingBag },
+    { to: '/dashboard/ai-match', label: t('aiMatcher'), shortLabel: 'AI Match', icon: FiZap },
+    { to: '/dashboard/resume-analyzer', label: t('resumeAnalyzer'), shortLabel: 'Resume', icon: FiFileText },
+    { to: '/dashboard/ai-assistant', label: t('aiAssistant'), shortLabel: 'AI Chat', icon: FiMessageCircle },
+    { to: '/dashboard/collaborator/applications', label: t('applications'), shortLabel: t('applications'), icon: FiList },
+    { to: '/dashboard/bookmarks', label: t('bookmarks'), shortLabel: t('bookmarks'), icon: FiBookmark },
   ];
 
   const adminLinks = [
-    { to: '/dashboard/admin', label: t('overview'), icon: FiHome },
-    { to: '/dashboard/admin/users', label: 'Users Control', icon: FiUsers },
-    { to: '/dashboard/admin/startups', label: 'Startups Control', icon: FiBriefcase },
-    { to: '/dashboard/admin/opportunities', label: 'Positions Audit', icon: FiList },
-    { to: '/dashboard/admin/transactions', label: 'Transactions', icon: FiDollarSign },
-    { to: '/dashboard/admin/activity', label: 'Activity Logs', icon: FiActivity },
+    { to: '/dashboard/admin', label: t('overview'), shortLabel: t('overview'), icon: FiHome },
+    { to: '/dashboard/admin/users', label: t('users'), shortLabel: t('users'), icon: FiUsers },
+    { to: '/dashboard/admin/startups', label: t('startups'), shortLabel: t('startups'), icon: FiBriefcase },
+    { to: '/dashboard/admin/opportunities', label: t('positions'), shortLabel: t('positions'), icon: FiList },
+    { to: '/dashboard/admin/transactions', label: t('payments'), shortLabel: t('payments'), icon: FiDollarSign },
+    { to: '/dashboard/admin/activity', label: 'Activity Logs', shortLabel: 'Logs', icon: FiActivity },
   ];
 
   const getLinks = () => {
@@ -161,7 +161,7 @@ export default function Sidebar() {
     </aside>
 
       {/* Mobile Nav */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 text-slate-800 dark:text-white z-40 flex justify-around py-2.5 border-t border-slate-200 dark:border-slate-800">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md text-slate-800 dark:text-white z-50 grid grid-cols-5 py-2 px-1 border-t border-slate-200 dark:border-slate-800 shadow-2xl">
         {links.slice(0, 5).map((link) => {
           const Icon = link.icon;
           const isActive = location.pathname === link.to;
@@ -169,10 +169,14 @@ export default function Sidebar() {
             <Link
               key={link.to}
               to={link.to}
-              className={`flex flex-col items-center text-[10px] font-bold ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400'} transition-colors px-2`}
+              className={`flex flex-col items-center justify-center py-1 px-0.5 font-bold ${
+                isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-400'
+              } transition-colors min-w-0`}
             >
-              <Icon size={18} />
-              <span className="mt-1 truncate max-w-[60px]">{link.label.split(' ')[0]}</span>
+              <Icon size={18} className="shrink-0" />
+              <span className="mt-0.5 text-[9px] sm:text-[10px] tracking-tight truncate w-full text-center block font-semibold">
+                {link.shortLabel || link.label}
+              </span>
             </Link>
           );
         })}

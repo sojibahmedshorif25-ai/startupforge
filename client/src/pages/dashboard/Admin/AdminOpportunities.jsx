@@ -54,31 +54,31 @@ export default function AdminOpportunities() {
       </div>
 
       {/* Opportunities Table */}
-      <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden">
+      <div className="p-4 sm:p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden w-full">
         {loading ? (
-          <div className="p-12 text-center text-xs text-slate-400">Loading opportunities audit log...</div>
+          <div className="p-12 text-center text-xs text-slate-500 dark:text-slate-400">Loading opportunities audit log...</div>
         ) : filtered.length === 0 ? (
-          <div className="p-12 text-center text-xs text-slate-400">No opportunities found matching query.</div>
+          <div className="p-12 text-center text-xs text-slate-500 dark:text-slate-400">No opportunities found matching query.</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+          <div className="overflow-x-auto w-full">
+            <table className="w-full text-left border-collapse min-w-[650px]">
               <thead>
-                <tr className="border-b border-slate-100 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  <th className="pb-3 px-4">Role Title</th>
-                  <th className="pb-3 px-4">Startup</th>
-                  <th className="pb-3 px-4">Work Type</th>
-                  <th className="pb-3 px-4">Commitment</th>
-                  <th className="pb-3 px-4">Deadline</th>
+                <tr className="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider bg-slate-50 dark:bg-slate-950">
+                  <th className="py-3 px-4">Role Title</th>
+                  <th className="py-3 px-4">Startup</th>
+                  <th className="py-3 px-4">Work Type</th>
+                  <th className="py-3 px-4">Commitment</th>
+                  <th className="py-3 px-4">Deadline</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs font-medium">
                 {filtered.map((opp) => (
                   <tr key={opp._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
                     <td className="py-4 px-4 font-bold text-slate-900 dark:text-white">{opp.role_title}</td>
-                    <td className="py-4 px-4 text-indigo-600 dark:text-indigo-400">{opp.startup_id?.startup_name || 'Startup'}</td>
-                    <td className="py-4 px-4 capitalize">{opp.work_type}</td>
-                    <td className="py-4 px-4 capitalize">{opp.commitment_level}</td>
-                    <td className="py-4 px-4 text-slate-400">{new Date(opp.deadline).toLocaleDateString()}</td>
+                    <td className="py-4 px-4 text-indigo-600 dark:text-indigo-400 font-bold">{opp.startup_id?.startup_name || 'Startup'}</td>
+                    <td className="py-4 px-4 capitalize text-slate-700 dark:text-slate-300">{opp.work_type}</td>
+                    <td className="py-4 px-4 capitalize text-slate-700 dark:text-slate-300">{opp.commitment_level}</td>
+                    <td className="py-4 px-4 text-slate-500 dark:text-slate-400">{new Date(opp.deadline).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody>

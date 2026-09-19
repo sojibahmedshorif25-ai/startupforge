@@ -54,15 +54,15 @@ export default function ManageStartups() {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
       <div>
-        <h1 className="text-3xl font-black text-white mb-1">Manage Startups</h1>
-        <p className="text-slate-400 text-sm">Approve or remove platform startup profiles</p>
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mb-1">Manage Startups</h1>
+        <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">Approve or remove platform startup profiles</p>
       </div>
 
-      <div className="rounded-3xl bg-slate-900 border border-slate-800 shadow-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
+      <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden w-full">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left min-w-[650px]">
             <thead>
-              <tr className="bg-slate-950 border-b border-slate-800 text-slate-300 text-xs font-bold uppercase tracking-wider">
+              <tr className="bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase tracking-wider">
                 <th className="px-6 py-4">Startup</th>
                 <th className="px-6 py-4">Founder Email</th>
                 <th className="px-6 py-4">Industry</th>
@@ -70,31 +70,31 @@ export default function ManageStartups() {
                 <th className="px-6 py-4">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800 text-xs font-medium">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-xs font-medium">
               {startups.map((s) => (
-                <tr key={s._id} className="hover:bg-slate-800/50 transition-colors">
+                <tr key={s._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       {s.logo ? (
-                        <img src={s.logo} alt={s.startup_name} className="w-10 h-10 rounded-xl object-cover border border-slate-700" />
+                        <img src={s.logo} alt={s.startup_name} className="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-slate-700" />
                       ) : (
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-sm font-black">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-sm font-black shadow-sm">
                           {s.startup_name?.charAt(0)}
                         </div>
                       )}
-                      <span className="font-bold text-white text-sm">{s.startup_name}</span>
+                      <span className="font-bold text-slate-900 dark:text-white text-sm">{s.startup_name}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-slate-200 font-mono text-xs">{s.founder_email}</td>
-                  <td className="px-6 py-4 text-slate-300 font-semibold">{s.industry}</td>
+                  <td className="px-6 py-4 text-slate-600 dark:text-slate-200 font-mono text-xs">{s.founder_email}</td>
+                  <td className="px-6 py-4 text-slate-700 dark:text-slate-300 font-semibold">{s.industry}</td>
                   <td className="px-6 py-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${
                         s.status === 'approved'
-                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                          ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30'
                           : s.status === 'pending'
-                          ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                          : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                          ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30'
+                          : 'bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30'
                       }`}
                     >
                       {s.status}
@@ -105,7 +105,7 @@ export default function ManageStartups() {
                       {s.status !== 'approved' && (
                         <button
                           onClick={() => approve(s._id)}
-                          className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-colors border border-emerald-500/30"
+                          className="p-2 rounded-xl bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-500/30 transition-colors border border-emerald-200 dark:border-emerald-500/30"
                           title="Approve Startup"
                         >
                           <FiCheck size={16} />
@@ -113,7 +113,7 @@ export default function ManageStartups() {
                       )}
                       <button
                         onClick={() => remove(s._id)}
-                        className="p-2 rounded-xl bg-rose-500/20 text-rose-400 hover:bg-rose-500/30 transition-colors border border-rose-500/30"
+                        className="p-2 rounded-xl bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-400 hover:bg-rose-200 dark:hover:bg-rose-500/30 transition-colors border border-rose-200 dark:border-rose-500/30"
                         title="Remove Startup"
                       >
                         <FiTrash2 size={16} />
