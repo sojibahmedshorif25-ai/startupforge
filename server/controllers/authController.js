@@ -154,6 +154,73 @@ export const logout = async (req, res) => {
   return res.json({ message: 'Logged out successfully' });
 };
 
+export const googleAuth = async (req, res) => {
+  try {
+    const { name, email, image, role } = req.body;
+    const userEmail = email || 'user.google@gmail.com';
+    const userName = name || 'Google Account User';
+    const userRole = role || 'collaborator';
+    const userImage = image || 'https://lh3.googleusercontent.com/a/default-user';
+
+    if (mongoose.connection.readyState === 1) {
+      let user = await User.findOne({ email: userEmail });
+      if (!user) {
+        const dummyPassword = await bcrypt.hash('GoogleSecret123!', 10);
+        user = await User.create({
+          name: userName,
+          email: userEmail,
+          image: userImage,
+          password: dummyPassword,
+          role: userRole,
+        });
+      }
+      const token = generateToken(user);
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+      return res.json({
+        message: 'Google login successful',
+        token,
+        user: { id: user._id, name: user.name, email: user.email, image: user.image, role: user.role },
+      });
+    }
+
+    // Mock Fallback
+    let user = mockUsers.find((u) => u.email.toLowerCase() === userEmail.toLowerCase());
+    if (!user) {
+      user = {
+        _id: `usr_g_${Date.now()}`,
+        name: userName,
+        email: userEmail,
+        image: userImage,
+        role: userRole,
+        isBlocked: false,
+        isPremium: true,
+        skills: ['React', 'Node.js', 'Python'],
+        bio: 'Google Verified User on StartupForge',
+      };
+      mockUsers.push(user);
+    }
+    const token = generateToken(user);
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    return res.json({
+      message: 'Google login successful',
+      token,
+      user: { id: user._id, name: user.name, email: user.email, image: user.image, role: user.role },
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Google authentication failed: ' + error.message });
+  }
+};
+
 export const getMe = async (req, res) => {
   try {
     if (mongoose.connection.readyState === 1) {
@@ -175,17 +242,32 @@ export const getMe = async (req, res) => {
 
     // Mock Fallback
     const user = mockUsers.find((u) => u._id === req.user?.id || u.email === req.user?.email);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    if (user) {
+      const { password, ...safeUser } = user;
+      return res.json(safeUser);
     }
-    const { password, ...safeUser } = user;
-    return res.json(safeUser);
+
+    if (req.user) {
+      return res.json({
+        _id: req.user.id || 'usr_google',
+        name: req.user.name || 'Google Account User',
+        email: req.user.email || 'user.google@gmail.com',
+        role: req.user.role || 'collaborator',
+        image: 'https://lh3.googleusercontent.com/a/default-user',
+        skills: ['React', 'Node.js', 'JavaScript'],
+        bio: 'StartupForge AI Pioneer',
+        isPremium: true
+      });
+    }
+
+    return res.status(404).json({ message: 'User not found' });
   } catch (error) {
     return res.status(200).json({
       _id: req.user?.id || 'usr_demo',
-      name: req.user?.name || 'Demo User',
-      email: req.user?.email || 'demo@startupforge.com',
+      name: req.user?.name || 'Google Account User',
+      email: req.user?.email || 'user.google@gmail.com',
       role: req.user?.role || 'collaborator',
+      image: 'https://lh3.googleusercontent.com/a/default-user',
       skills: ['React', 'JavaScript', 'Node.js'],
       bio: 'Tech enthusiast building future ventures on StartupForge.',
     });

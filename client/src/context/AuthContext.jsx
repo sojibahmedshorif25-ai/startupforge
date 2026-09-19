@@ -108,17 +108,30 @@ export const AuthProvider = ({ children }) => {
   };
 
   const demoGoogleLogin = async (role = 'collaborator') => {
-    const googleUser = {
-      name: 'Google Account User',
-      email: 'user.google@gmail.com',
-      password: 'GoogleLogin123!',
-      role,
-      image: 'https://lh3.googleusercontent.com/a/default-user',
-    };
     try {
-      return await login(googleUser.email, googleUser.password);
+      const { data } = await api.post('/auth/google', {
+        name: 'Google Account User',
+        email: 'user.google@gmail.com',
+        role,
+        image: 'https://lh3.googleusercontent.com/a/default-user',
+      });
+      if (data.token) {
+        localStorage.setItem('sf_token', data.token);
+      }
+      setUser(data.user);
+      return data;
     } catch {
-      return await register(googleUser);
+      const fallbackUser = {
+        id: 'usr_g_default',
+        name: 'Google Account User',
+        email: 'user.google@gmail.com',
+        role,
+        image: 'https://lh3.googleusercontent.com/a/default-user',
+      };
+      const token = 'google_demo_jwt_token_2026';
+      localStorage.setItem('sf_token', token);
+      setUser(fallbackUser);
+      return { user: fallbackUser, token };
     }
   };
 

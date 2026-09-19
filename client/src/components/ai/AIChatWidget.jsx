@@ -1,10 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { FiMessageSquare, FiX, FiSend, FiZap, FiCopy, FiCheck, FiMinimize2 } from 'react-icons/fi';
 import api from '../../lib/axios';
 import { useAuth } from '../../context/AuthContext';
 
 export default function AIChatWidget() {
   const { user } = useAuth();
+  const location = useLocation();
+
+  if (location.pathname === '/dashboard/ai-assistant') return null;
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
