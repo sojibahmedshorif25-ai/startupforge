@@ -65,7 +65,7 @@ const DashboardLayout = ({ children, allowedRoles }) => {
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
       <Sidebar />
-      <div className="flex-1 md:ml-64 pb-16 md:pb-0">
+      <div className="flex-1 md:ml-64 pb-24 md:pb-8">
         <div className="p-4 md:p-8 max-w-7xl mx-auto">{children}</div>
       </div>
       <AIChatWidget />

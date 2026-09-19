@@ -40,8 +40,8 @@ export default function FounderOverview() {
           <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 text-xs font-black uppercase tracking-wider mb-2">
             <FiZap /> AI Founder Control Center
           </span>
-          <h1 className="text-3xl font-black text-white tracking-tight">Founder Analytics & Overview</h1>
-          <p className="text-slate-400 text-sm">Real-time metrics, AI applicant matching, and team scalability</p>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight">Founder Analytics & Overview</h1>
+          <p className="text-slate-400 text-xs sm:text-sm">Real-time metrics, AI applicant matching, and team scalability</p>
         </div>
         <Link to="/dashboard/founder/add-opportunity" className="btn-primary py-3.5 px-6 font-extrabold text-sm shadow-xl shadow-purple-600/30">
           <FiPlus className="mr-1.5" size={18} /> Post Position with AI

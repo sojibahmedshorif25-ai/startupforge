@@ -81,19 +81,19 @@ export default function AIChatWidget() {
   ];
 
   return (
-    <div className="fixed bottom-5 right-5 z-50">
+    <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50">
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2.5 px-4 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-medium rounded-full shadow-2xl hover:shadow-indigo-500/25 hover:scale-105 active:scale-95 transition-all duration-300"
+          className="flex items-center gap-2 px-3.5 sm:px-4 py-2.5 sm:py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white font-medium rounded-full shadow-2xl hover:shadow-indigo-500/30 hover:scale-105 active:scale-95 transition-all duration-300 border border-indigo-400/30"
         >
-          <FiZap className="w-5 h-5 animate-pulse" />
-          <span className="text-sm font-semibold tracking-wide">AI Assistant</span>
+          <FiZap className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" />
+          <span className="text-xs sm:text-sm font-semibold tracking-wide">AI Assistant</span>
         </button>
       )}
 
       {isOpen && (
-        <div className="w-[90vw] sm:w-[380px] h-[520px] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="w-[calc(100vw-2rem)] sm:w-[380px] h-[480px] sm:h-[520px] max-h-[70vh] bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           {/* Header */}
           <div className="p-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-center justify-between">
             <div className="flex items-center gap-3">
