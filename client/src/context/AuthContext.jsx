@@ -72,16 +72,22 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = useCallback(async () => {
     const token = localStorage.getItem('sf_token');
+    if (!token) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
     try {
       const { data } = await api.get('/auth/me');
       setUser(data);
     } catch {
       setUser(null);
-      if (token) localStorage.removeItem('sf_token');
+      localStorage.removeItem('sf_token');
     } finally {
       setLoading(false);
     }
   }, []);
+
 
   useEffect(() => {
     checkAuth();

@@ -146,7 +146,7 @@ export default function Login() {
               type="button"
               onClick={() => {
                 setActiveTab('admin');
-                fillAdminCredentials();
+                setForm({ email: '', password: '' });
               }}
               className={`flex-1 py-3 px-4 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 ${
                 activeTab === 'admin'
@@ -205,7 +205,6 @@ export default function Login() {
                   theme="filled_black"
                   shape="pill"
                   size="large"
-                  width="100%"
                   text="continue_with"
                 />
               </div>
@@ -218,22 +217,14 @@ export default function Login() {
           ) : (
             <div className="mb-6">
               <div className="p-4 rounded-2xl bg-purple-500/10 border border-purple-500/30 mb-5">
-                <div className="flex items-center justify-between mb-1">
-                  <p className="text-xs font-black text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
-                    <FiShield className="text-purple-400" /> Platform Admin Account:
-                  </p>
-                  <button
-                    type="button"
-                    onClick={fillAdminCredentials}
-                    className="text-[11px] bg-purple-600 hover:bg-purple-700 text-white px-2.5 py-1 rounded-lg font-bold transition-all"
-                  >
-                    1-Click Fill
-                  </button>
-                </div>
-                <p className="text-xs text-slate-300 font-mono">sojibahmedshorif25@gmail.com</p>
+                <p className="text-xs font-black text-purple-300 uppercase tracking-wider flex items-center gap-1.5 mb-1">
+                  <FiShield className="text-purple-400" /> Platform Admin Sign In
+                </p>
+                <p className="text-xs text-slate-400">Enter master email (sojibahmedshorif25@gmail.com) and password below to access the Admin Panel.</p>
               </div>
             </div>
           )}
+
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
