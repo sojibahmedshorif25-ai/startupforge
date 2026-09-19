@@ -15,6 +15,8 @@ import userRoutes from './routes/userRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import bookmarkRoutes from './routes/bookmarkRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import networkRoutes from './routes/networkRoutes.js';
+import communityRoutes from './routes/communityRoutes.js';
 
 dotenv.config();
 
@@ -78,6 +80,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/bookmarks', bookmarkRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/network', networkRoutes);
+app.use('/api/community', communityRoutes);
 
 app.use(errorHandler);
 

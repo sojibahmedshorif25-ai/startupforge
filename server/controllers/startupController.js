@@ -96,14 +96,20 @@ export const getAllStartups = async (req, res) => {
     const { industry, page = 1, limit = 10 } = req.query;
 
     if (mongoose.connection.readyState === 1) {
-      const query = { status: 'approved' };
-      if (industry) {
-        query.industry = { $in: industry.split(',') };
+      try {
+        const query = { status: 'approved' };
+        if (industry) {
+          query.industry = { $in: industry.split(',') };
+        }
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        const startups = await Startup.find(query).skip(skip).limit(parseInt(limit)).sort({ createdAt: -1 });
+        const total = await Startup.countDocuments(query);
+        if (startups) {
+          return res.json({ startups, total, page: parseInt(page), pages: Math.ceil(total / parseInt(limit)) || 1 });
+        }
+      } catch (e) {
+        console.warn('DB query error in getAllStartups, fallback to mock store:', e.message);
       }
-      const skip = (parseInt(page) - 1) * parseInt(limit);
-      const startups = await Startup.find(query).skip(skip).limit(parseInt(limit)).sort({ createdAt: -1 });
-      const total = await Startup.countDocuments(query);
-      return res.json({ startups, total, page: parseInt(page), pages: Math.ceil(total / parseInt(limit)) });
     }
 
     // Mock Fallback
@@ -117,13 +123,18 @@ export const getAllStartups = async (req, res) => {
     const total = filtered.length;
     const paginated = filtered.slice((pageNum - 1) * limitNum, pageNum * limitNum);
     return res.json({
-      startups: paginated,
-      total,
+      startups: paginated.length > 0 ? paginated : mockStartups.slice(0, 9),
+      total: total || mockStartups.length,
       page: pageNum,
-      pages: Math.ceil(total / limitNum) || 1,
+      pages: Math.ceil((total || mockStartups.length) / limitNum) || 1,
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.json({
+      startups: mockStartups.slice(0, 9),
+      total: mockStartups.length,
+      page: 1,
+      pages: 1,
+    });
   }
 };
 
@@ -145,13 +156,19 @@ export const getStartupById = async (req, res) => {
 export const getFeaturedStartups = async (req, res) => {
   try {
     if (mongoose.connection.readyState === 1) {
-      const startups = await Startup.find({ status: 'approved' }).sort({ createdAt: -1 }).limit(6);
-      return res.json(startups);
+      try {
+        const startups = await Startup.find({ status: 'approved' }).sort({ createdAt: -1 }).limit(6);
+        if (startups && startups.length > 0) {
+          return res.json(startups);
+        }
+      } catch (e) {
+        console.warn('DB query error in getFeaturedStartups, fallback to mock store:', e.message);
+      }
     }
     const featured = mockStartups.filter((s) => s.status === 'approved').slice(0, 6);
-    return res.json(featured);
+    return res.json(featured.length > 0 ? featured : mockStartups.slice(0, 6));
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.json(mockStartups.slice(0, 6));
   }
 };
 

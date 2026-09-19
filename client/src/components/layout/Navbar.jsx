@@ -40,10 +40,10 @@ export default function Navbar() {
       {/* Glowing Gradient Accent Line */}
       <div className="h-[2px] w-full bg-gradient-to-r from-indigo-600 via-purple-500 to-indigo-600"></div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 group">
+          <Link to="/" className="flex items-center space-x-3 group shrink-0">
             <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition-all duration-300">
               <span className="text-white font-black text-xl">S</span>
             </div>
@@ -53,12 +53,12 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Links */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden lg:flex items-center space-x-1">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
-                className={`px-4 py-2 rounded-xl font-bold text-sm transition-all duration-200 ${
+                className={`px-3 py-2 rounded-xl font-bold text-xs xl:text-sm transition-all duration-200 ${
                   isActive(link.to)
                     ? 'bg-indigo-50 dark:bg-indigo-600/30 text-indigo-600 dark:text-white border border-indigo-200 dark:border-indigo-500/40 shadow-xs'
                     : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'
@@ -70,11 +70,11 @@ export default function Navbar() {
           </div>
 
           {/* Right Action Controls */}
-          <div className="hidden md:flex items-center space-x-3">
+          <div className="hidden md:flex items-center space-x-2 xl:space-x-3 shrink-0">
             {/* Language Toggle Button */}
             <button
               onClick={toggleLanguage}
-              className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-slate-700/60 flex items-center gap-1.5 shadow-xs"
+              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-slate-700/60 flex items-center gap-1.5 shadow-xs"
               title="Switch Language (English / বাংলা)"
             >
               <span>🌐</span> {language === 'EN' ? 'EN' : 'বাংলা'}
@@ -83,10 +83,10 @@ export default function Navbar() {
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-slate-700/60 shadow-xs"
+              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-slate-700/60 shadow-xs"
               title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             >
-              {darkMode ? <HiSun size={20} className="text-amber-400 animate-spin-slow" /> : <HiMoon size={20} className="text-slate-700" />}
+              {darkMode ? <HiSun size={18} className="text-amber-400 animate-spin-slow" /> : <HiMoon size={18} className="text-slate-700" />}
             </button>
 
             {/* In-App Notifications Dropdown */}
@@ -96,7 +96,7 @@ export default function Navbar() {
               <>
                 <Link
                   to={getDashboardLink()}
-                  className={`px-4 py-2 rounded-xl font-bold text-sm transition-all duration-200 ${
+                  className={`px-3.5 py-1.5 rounded-xl font-bold text-xs xl:text-sm transition-all duration-200 ${
                     isActive(getDashboardLink())
                       ? 'bg-indigo-600 text-white shadow-md'
                       : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60'
@@ -107,21 +107,21 @@ export default function Navbar() {
 
                 <Link
                   to="/dashboard/profile"
-                  className="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-slate-700/50"
+                  className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-slate-700/50 max-w-[140px]"
                 >
                   {user.image ? (
-                    <img src={user.image} alt={user.name} className="w-7 h-7 rounded-full object-cover ring-2 ring-indigo-500/50" />
+                    <img src={user.image} alt={user.name} className="w-6 h-6 rounded-full object-cover ring-2 ring-indigo-500/50 shrink-0" />
                   ) : (
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xs font-black">
+                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-[10px] font-black shrink-0">
                       {user.name?.charAt(0)?.toUpperCase()}
                     </div>
                   )}
-                  <span className="text-sm font-bold text-slate-800 dark:text-slate-200">{user.name?.split(' ')[0]}</span>
+                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{user.name?.split(' ')[0]}</span>
                 </Link>
 
                 <button
                   onClick={handleLogout}
-                  className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold transition-all duration-200 shadow-md text-xs uppercase tracking-wider"
+                  className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold transition-all duration-200 shadow-md text-[11px] uppercase tracking-wider"
                 >
                   {t('logout')}
                 </button>
@@ -130,13 +130,13 @@ export default function Navbar() {
               <>
                 <Link
                   to="/login"
-                  className="px-4 py-2 text-slate-700 dark:text-slate-300 font-bold text-sm hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                  className="px-3 py-1.5 text-slate-700 dark:text-slate-300 font-bold text-xs xl:text-sm hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 >
                   {t('login')}
                 </Link>
                 <Link
                   to="/register"
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-xs uppercase tracking-wider shadow-lg hover:shadow-indigo-500/25 hover:scale-105 transition-all duration-300"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-xs uppercase tracking-wider shadow-lg hover:shadow-indigo-500/25 hover:scale-105 transition-all duration-300"
                 >
                   {t('register')}
                 </Link>
