@@ -30,6 +30,19 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-ui': ['framer-motion', 'react-icons'],
+          'vendor-charts': ['recharts'],
+          'vendor-export': ['jspdf', 'html2canvas'],
+        },
+      },
+    },
+  },
   server: {
     port: 5173,
     proxy: {
