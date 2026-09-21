@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../lib/axios';
 import { useAuth } from '../../context/AuthContext';
-import { FiUsers, FiGrid, FiChevronLeft, FiChevronRight, FiBookmark, FiSearch, FiLayers, FiTrendingUp, FiThumbsUp, FiArrowRight } from 'react-icons/fi';
+import {
+  FiUsers, FiGrid, FiChevronLeft, FiChevronRight, FiBookmark,
+  FiSearch, FiLayers, FiTrendingUp, FiThumbsUp, FiArrowRight,
+  FiX, FiCheck, FiBarChart2, FiShield, FiExternalLink, FiSliders
+} from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
 const industries = ['All', 'AI & Data Science', 'HealthTech', 'ClimateTech', 'FinTech', 'EdTech', 'Cybersecurity', 'Robotics & Automation', 'SaaS & DevOps', 'AgriTech', 'Logistics', 'Real Estate Tech'];
@@ -17,6 +21,23 @@ export default function BrowseStartups() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [compareList, setCompareList] = useState([]);
+  const [showCompareModal, setShowCompareModal] = useState(false);
+
+  const toggleCompare = (startup, e) => {
+    e.stopPropagation();
+    if (compareList.some(s => s._id === startup._id)) {
+      setCompareList(prev => prev.filter(s => s._id !== startup._id));
+      toast.success(`Removed ${startup.startup_name} from comparison`);
+    } else {
+      if (compareList.length >= 3) {
+        toast.error('You can compare a maximum of 3 startups at once');
+        return;
+      }
+      setCompareList(prev => [...prev, startup]);
+      toast.success(`Added ${startup.startup_name} to comparison`);
+    }
+  };
 
   const fetchStartups = async () => {
     setLoading(true);
@@ -139,6 +160,18 @@ export default function BrowseStartups() {
                     
                     <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
                       <button
+                        onClick={(e) => toggleCompare(startup, e)}
+                        className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-black backdrop-blur-md transition-all shadow-md ${
+                          compareList.some(s => s._id === startup._id)
+                            ? 'bg-indigo-600 text-white ring-2 ring-indigo-400'
+                            : 'bg-black/60 text-indigo-300 hover:text-white border border-indigo-500/30'
+                        }`}
+                        title="Add to Comparison Matrix"
+                      >
+                        <FiSliders size={13} />
+                        <span>{compareList.some(s => s._id === startup._id) ? 'Selected' : 'Compare'}</span>
+                      </button>
+                      <button
                         onClick={(e) => handleUpvote(startup._id, e)}
                         className="flex items-center gap-1.5 px-3 py-1.5 bg-black/60 backdrop-blur-md text-amber-400 hover:text-white border border-amber-500/30 hover:bg-amber-500 rounded-xl text-xs font-black transition-all shadow-md active:scale-95"
                       >
@@ -242,6 +275,130 @@ export default function BrowseStartups() {
           )}
         </>
       )}
+
+      {/* Floating Compare Action Bar */}
+      <AnimatePresence>
+        {compareList.length > 0 && (
+          <motion.div
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-900/95 text-white border border-indigo-500/40 backdrop-blur-xl px-6 py-3.5 rounded-2xl shadow-2xl flex items-center gap-4 max-w-xl w-full justify-between ring-1 ring-indigo-500/20"
+          >
+            <div className="flex items-center gap-2 overflow-x-auto py-1">
+              <span className="text-xs font-black uppercase tracking-wider text-indigo-400 shrink-0 flex items-center gap-1">
+                <FiSliders /> Compare:
+              </span>
+              {compareList.map(s => (
+                <div key={s._id} className="flex items-center gap-1.5 px-3 py-1 bg-white/10 rounded-xl text-xs font-bold shrink-0 border border-white/10">
+                  <span className="truncate max-w-[90px]">{s.startup_name}</span>
+                  <button onClick={(e) => toggleCompare(s, e)} className="text-slate-400 hover:text-rose-400">
+                    <FiX size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => setCompareList([])}
+                className="px-2.5 py-1.5 text-xs text-slate-400 hover:text-white"
+              >
+                Clear
+              </button>
+              <button
+                onClick={() => setShowCompareModal(true)}
+                className="btn-primary py-2 px-4 text-xs font-extrabold shadow-lg shadow-indigo-500/30 flex items-center gap-1.5 whitespace-nowrap"
+              >
+                <FiBarChart2 size={14} /> Compare ({compareList.length})
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Side-by-Side Startup Comparison Matrix Modal */}
+      <AnimatePresence>
+        {showCompareModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-indigo-500/30 rounded-3xl max-w-5xl w-full p-6 md:p-8 shadow-2xl relative my-8"
+            >
+              <div className="flex items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800">
+                <div>
+                  <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 text-xs font-black uppercase tracking-widest mb-1">
+                    <FiBarChart2 /> Venture Due Diligence Matrix
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">Side-by-Side Startup Comparison</h2>
+                </div>
+                <button
+                  onClick={() => setShowCompareModal(false)}
+                  className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+                >
+                  <FiX size={20} />
+                </button>
+              </div>
+
+              {/* Matrix Grid */}
+              <div className="overflow-x-auto pt-6">
+                <div className={`grid grid-cols-${compareList.length} gap-6 min-w-[600px]`}>
+                  {compareList.map(s => (
+                    <div key={s._id} className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+                      <div>
+                        <div className="h-32 rounded-xl overflow-hidden mb-4 relative bg-slate-950">
+                          <img src={s.logo || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400'} alt={s.startup_name} className="w-full h-full object-cover opacity-90" />
+                          <div className="absolute bottom-2 left-2 px-2.5 py-0.5 bg-black/60 backdrop-blur-md rounded-md text-[10px] font-black text-white">
+                            {s.industry}
+                          </div>
+                        </div>
+
+                        <h3 className="text-xl font-black text-slate-900 dark:text-white mb-1">{s.startup_name}</h3>
+                        <p className="text-xs text-slate-500 mb-4 font-medium">Founder: {s.founder_name || 'Visionary'}</p>
+
+                        <div className="space-y-3 text-xs mb-6">
+                          <div className="flex justify-between py-1.5 border-b border-slate-200 dark:border-slate-800">
+                            <span className="text-slate-500 dark:text-slate-400 font-bold">Funding Stage:</span>
+                            <span className="font-black text-emerald-600 dark:text-emerald-400">{s.funding_stage}</span>
+                          </div>
+                          <div className="flex justify-between py-1.5 border-b border-slate-200 dark:border-slate-800">
+                            <span className="text-slate-500 dark:text-slate-400 font-bold">Roles Open:</span>
+                            <span className="font-black text-indigo-600 dark:text-indigo-400">{s.team_size_needed} Roles</span>
+                          </div>
+                          <div className="flex justify-between py-1.5 border-b border-slate-200 dark:border-slate-800">
+                            <span className="text-slate-500 dark:text-slate-400 font-bold">Community Upvotes:</span>
+                            <span className="font-black text-amber-500">🔥 {s.upvotes || 42}</span>
+                          </div>
+                          <div className="flex justify-between py-1.5 border-b border-slate-200 dark:border-slate-800">
+                            <span className="text-slate-500 dark:text-slate-400 font-bold">Venture Status:</span>
+                            <span className="font-black text-emerald-500 flex items-center gap-1"><FiCheck size={12} /> Verified</span>
+                          </div>
+                        </div>
+
+                        <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-4 leading-relaxed mb-6 font-normal">
+                          {s.description}
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          setShowCompareModal(false);
+                          navigate(`/startups/${s._id}`);
+                        }}
+                        className="w-full btn-primary py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 shadow-md"
+                      >
+                        Open Full Pitch <FiExternalLink size={13} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
