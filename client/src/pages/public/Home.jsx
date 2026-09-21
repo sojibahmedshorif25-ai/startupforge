@@ -15,6 +15,8 @@ import {
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
+import { initialStartups, initialOpportunities } from '../../data/fallbackData';
+
 const fadeUp = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
@@ -24,19 +26,25 @@ const fadeUp = {
 
 export default function Home() {
   const { t } = useAuth();
-  const [startups, setStartups] = useState([]);
-  const [opportunities, setOpportunities] = useState([]);
+  const [startups, setStartups] = useState(initialStartups);
+  const [opportunities, setOpportunities] = useState(initialOpportunities);
   const [demoPrompt, setDemoPrompt] = useState('Autonomous AI agent that writes automated integration tests for React & Node.js');
   const [demoPitch, setDemoPitch] = useState('');
   const [demoLoading, setDemoLoading] = useState(false);
 
   useEffect(() => {
     api.get('/startups/featured')
-      .then(({ data }) => setStartups(Array.isArray(data) ? data : (data?.startups || data?.featured || [])))
-      .catch(() => setStartups([]));
+      .then(({ data }) => {
+        const list = Array.isArray(data) ? data : (data?.startups || data?.featured || []);
+        if (list.length > 0) setStartups(list);
+      })
+      .catch(() => {});
     api.get('/opportunities/featured')
-      .then(({ data }) => setOpportunities(Array.isArray(data) ? data : (data?.opportunities || data?.featured || [])))
-      .catch(() => setOpportunities([]));
+      .then(({ data }) => {
+        const list = Array.isArray(data) ? data : (data?.opportunities || data?.featured || []);
+        if (list.length > 0) setOpportunities(list);
+      })
+      .catch(() => {});
   }, []);
 
   const handleUpvote = async (id, e) => {

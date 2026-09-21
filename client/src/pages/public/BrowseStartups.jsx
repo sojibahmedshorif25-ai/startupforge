@@ -10,17 +10,19 @@ import {
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
+import { initialStartups } from '../../data/fallbackData';
+
 const industries = ['All', 'AI & Data Science', 'HealthTech', 'ClimateTech', 'FinTech', 'EdTech', 'Cybersecurity', 'Robotics & Automation', 'SaaS & DevOps', 'AgriTech', 'Logistics', 'Real Estate Tech'];
 
 export default function BrowseStartups() {
   const { bookmarks, toggleBookmark, t } = useAuth();
   const navigate = useNavigate();
-  const [startups, setStartups] = useState([]);
+  const [startups, setStartups] = useState(initialStartups);
   const [industry, setIndustry] = useState('');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [compareList, setCompareList] = useState([]);
   const [showCompareModal, setShowCompareModal] = useState(false);
 

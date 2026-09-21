@@ -20,6 +20,7 @@ import {
   FiBookmark
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
+import { initialOpportunities } from '../../data/fallbackData';
 
 const workTypes = ['', 'remote', 'onsite', 'hybrid'];
 const industries = ['', 'AI & Data Science', 'HealthTech', 'ClimateTech', 'FinTech', 'EdTech', 'Cybersecurity', 'Robotics & Automation', 'SaaS & DevOps', 'AgriTech', 'Logistics', 'Real Estate Tech'];
@@ -27,13 +28,13 @@ const industries = ['', 'AI & Data Science', 'HealthTech', 'ClimateTech', 'FinTe
 export default function BrowseOpportunities() {
   const { user, t } = useAuth();
   const navigate = useNavigate();
-  const [opportunities, setOpportunities] = useState([]);
+  const [opportunities, setOpportunities] = useState(initialOpportunities);
   const [searchTerm, setSearchTerm] = useState('');
   const [workType, setWorkType] = useState('');
   const [industry, setIndustry] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
   // Apply Modal state
