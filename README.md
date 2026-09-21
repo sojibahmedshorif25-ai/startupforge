@@ -19,11 +19,11 @@
 
 ---
 
-## ⚡ Recruiter & Interviewer 1-Click Fast Access
+## 🔐 Production Authentication & Role-Based Access
 
-You can test all user roles with **1-Click Sandbox Login** on the [`/login`](https://startupforge-ruby.vercel.app/login) page:
+The platform supports direct **Google OAuth 2.0 Sign-In** and **Real Email & Password Registration**:
 
-| Role | Demo Email | Demo Password | Key Features Accessible |
+| Role | Email | Password | Key Features Accessible |
 | :--- | :--- | :--- | :--- |
 | 🛡️ **Master Admin** | `sojibahmedshorif25@gmail.com` | `Sojibboss@231946##` | Full User Moderation, Startup Approvals, Revenue Analytics |
 | 🚀 **Founder** | `alex.founder@techvision.io` | `Founder123!` | Post Ventures, Drag-and-Drop ATS Kanban Board, AI Pitch Decks |

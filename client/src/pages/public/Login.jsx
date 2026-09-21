@@ -267,84 +267,13 @@ export default function Login() {
               </div>
             </div>
 
-            {/* ⚡ Recruiter & Hiring Manager 1-Click Demo Sandbox */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-indigo-950/60 to-purple-950/60 border border-indigo-500/30 mb-6 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black text-indigo-300 flex items-center gap-1.5 uppercase tracking-wider">
-                  <FiZap className="text-amber-400" /> Recruiter & Demo 1-Click Access
-                </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 font-bold border border-indigo-500/30">
-                  Instant Sandbox
-                </span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={async () => {
-                    setLoading(true);
-                    try {
-                      await login('sojibahmedshorif25@gmail.com', 'Sojibboss@231946##');
-                      toast.success('⚡ Logged in as Admin Sandbox!');
-                      navigate('/dashboard/admin');
-                    } catch (e) {
-                      toast.error('Admin sandbox login error');
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                  className="py-2 px-2 rounded-xl bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/40 text-purple-200 text-[11px] font-bold transition-all text-center flex flex-col items-center gap-0.5"
-                >
-                  <FiShield className="text-purple-400" size={14} />
-                  <span>Admin Role</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={async () => {
-                    setLoading(true);
-                    try {
-                      await login('alex.founder@techvision.io', 'Founder123!');
-                      toast.success('🚀 Logged in as Founder Sandbox!');
-                      navigate('/dashboard/founder');
-                    } catch (e) {
-                      toast.error('Founder sandbox login error');
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                  className="py-2 px-2 rounded-xl bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/40 text-blue-200 text-[11px] font-bold transition-all text-center flex flex-col items-center gap-0.5"
-                >
-                  <FiBriefcase className="text-blue-400" size={14} />
-                  <span>Founder Role</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={async () => {
-                    setLoading(true);
-                    try {
-                      await login('dev.john@gmail.com', 'User123!');
-                      toast.success('🤝 Logged in as Collaborator Sandbox!');
-                      navigate('/dashboard/collaborator');
-                    } catch (e) {
-                      toast.error('Collaborator sandbox login error');
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                  className="py-2 px-2 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-200 text-[11px] font-bold transition-all text-center flex flex-col items-center gap-0.5"
-                >
-                  <FiUsers className="text-emerald-400" size={14} />
-                  <span>Collaborator</span>
-                </button>
-              </div>
-            </div>
-
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full py-4 text-base font-extrabold shadow-xl shadow-indigo-600/30"
+              className="btn-primary w-full py-4 text-base font-extrabold shadow-xl shadow-indigo-600/30 mt-2"
             >
               {loading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto"></div>
               ) : (
                 <>
                   Sign In to Dashboard <FiArrowRight className="ml-2" />
