@@ -23,12 +23,15 @@ import AddOpportunity from './pages/dashboard/Founder/AddOpportunity';
 import ManageOpportunities from './pages/dashboard/Founder/ManageOpportunities';
 import Applications from './pages/dashboard/Founder/Applications';
 import FounderAnalytics from './pages/dashboard/Founder/FounderAnalytics';
+import CapTableCalculator from './pages/dashboard/Founder/CapTableCalculator';
 
 import CollaboratorOverview from './pages/dashboard/Collaborator/Overview';
 import MyApplications from './pages/dashboard/Collaborator/MyApplications';
 import AIMatch from './pages/dashboard/Collaborator/AIMatch';
 import ResumeAnalyzer from './pages/dashboard/Collaborator/ResumeAnalyzer';
 import AIAssistantPage from './pages/dashboard/Collaborator/AIAssistantPage';
+import LiveCodeSandbox from './pages/dashboard/Collaborator/LiveCodeSandbox';
+import AIVoiceInterviewer from './pages/dashboard/Collaborator/AIVoiceInterviewer';
 
 import Bookmarks from './pages/dashboard/Bookmarks';
 import Profile from './pages/dashboard/Profile';
@@ -132,6 +135,14 @@ export default function App() {
         }
       />
       <Route
+        path="/dashboard/founder/cap-table"
+        element={
+          <PrivateRoute roles={['founder']}>
+            <DashboardLayout allowedRoles={['founder']}><CapTableCalculator /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
         path="/dashboard/founder/analytics"
         element={
           <PrivateRoute roles={['founder']}>
@@ -162,6 +173,22 @@ export default function App() {
         element={
           <PrivateRoute roles={['collaborator']}>
             <DashboardLayout allowedRoles={['collaborator']}><AIMatch /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/code-sandbox"
+        element={
+          <PrivateRoute roles={['collaborator', 'founder']}>
+            <DashboardLayout allowedRoles={['collaborator', 'founder']}><LiveCodeSandbox /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/ai-interview"
+        element={
+          <PrivateRoute roles={['collaborator', 'founder']}>
+            <DashboardLayout allowedRoles={['collaborator', 'founder']}><AIVoiceInterviewer /></DashboardLayout>
           </PrivateRoute>
         }
       />

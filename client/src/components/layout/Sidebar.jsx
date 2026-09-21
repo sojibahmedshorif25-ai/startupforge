@@ -19,7 +19,8 @@ export default function Sidebar() {
     { to: '/dashboard/founder/add-opportunity', label: t('addPosition'), shortLabel: t('addPosition'), icon: FiPlusCircle },
     { to: '/dashboard/founder/manage-opportunities', label: t('managePositions'), shortLabel: t('positions'), icon: FiList },
     { to: '/dashboard/founder/applications', label: t('applications'), shortLabel: t('applications'), icon: FiUsers },
-    { to: '/dashboard/founder/analytics', label: t('analytics'), shortLabel: t('analytics'), icon: FiTrendingUp },
+    { to: '/dashboard/founder/cap-table', label: 'Cap Table Calculator', shortLabel: 'Cap Table', icon: FiTrendingUp },
+    { to: '/dashboard/founder/analytics', label: t('analytics'), shortLabel: t('analytics'), icon: FiActivity },
     { to: '/pricing', label: t('pricing'), shortLabel: t('pricing'), icon: FiStar },
   ];
 
@@ -27,8 +28,9 @@ export default function Sidebar() {
     { to: '/dashboard/collaborator', label: t('overview'), shortLabel: t('overview'), icon: FiHome },
     { to: '/opportunities', label: t('findOpportunities'), shortLabel: t('positions'), icon: FiShoppingBag },
     { to: '/dashboard/ai-match', label: t('aiMatcher'), shortLabel: 'AI Match', icon: FiZap },
+    { to: '/dashboard/code-sandbox', label: 'Live Code Sandbox', shortLabel: 'Sandbox', icon: FiFileText },
+    { to: '/dashboard/ai-interview', label: 'AI Voice Interviewer', shortLabel: 'AI Voice', icon: FiMessageCircle },
     { to: '/dashboard/resume-analyzer', label: t('resumeAnalyzer'), shortLabel: 'Resume', icon: FiFileText },
-    { to: '/dashboard/ai-assistant', label: t('aiAssistant'), shortLabel: 'AI Chat', icon: FiMessageCircle },
     { to: '/dashboard/collaborator/applications', label: t('applications'), shortLabel: t('applications'), icon: FiList },
     { to: '/dashboard/bookmarks', label: t('bookmarks'), shortLabel: t('bookmarks'), icon: FiBookmark },
   ];
