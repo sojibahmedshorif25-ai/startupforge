@@ -232,6 +232,100 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Next-Gen Innovation Suite Showcase */}
+      <section className="py-24 bg-white dark:bg-[#0B0E14] relative border-b border-slate-200 dark:border-white/5">
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
+          <motion.div {...fadeUp} className="text-center max-w-3xl mx-auto mb-16">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 text-xs font-extrabold uppercase tracking-wider mb-3">
+              <FiZap /> The StartupForge 2.0 Advantage
+            </span>
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white">
+              Everything You Need to Build, Fund & Scale
+            </h2>
+            <p className="text-slate-600 dark:text-slate-400 text-sm md:text-base mt-2">
+              From real-time WebRTC technical interviews to AI pitch deck generation, all in one unified ecosystem.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                icon: '💬',
+                title: 'Socket.IO Real-time Chat',
+                desc: 'Sub-millisecond messaging between founders and elite candidates with live typing indicators.',
+                link: '/login',
+                badge: 'Live WebSocket',
+              },
+              {
+                icon: '🎥',
+                title: 'In-App WebRTC Video Calls',
+                desc: 'Conduct 1-on-1 technical interviews with camera/mic controls and screen sharing without leaving the app.',
+                link: '/login',
+                badge: 'WebRTC HD',
+              },
+              {
+                icon: '🎙️',
+                title: 'AI Voice Mock Interviewer',
+                desc: 'AI speaks technical questions aloud, listens to your answers, and outputs a readiness score.',
+                link: '/dashboard/ai-interview',
+                badge: 'Speech Synthesis',
+              },
+              {
+                icon: '💻',
+                title: 'Live Code Sandbox',
+                desc: 'In-browser algorithm test runner and challenge environment for instant technical screening.',
+                link: '/dashboard/code-sandbox',
+                badge: 'JS Engine',
+              },
+              {
+                icon: '📊',
+                title: 'Cap Table & Valuation Tools',
+                desc: 'Simulate pre/post-money funding rounds, calculate dilution, and model equity splits with dynamic charts.',
+                link: '/dashboard/founder/cap-table',
+                badge: 'Recharts Pie',
+              },
+              {
+                icon: '🤖',
+                title: 'AI Pitch Deck & Equity PDF',
+                desc: 'Generate investor-ready Pitch Decks and Co-Founder Equity Contracts exported directly to PDF.',
+                link: '/login',
+                badge: 'Gemini + jsPDF',
+              },
+            ].map((card, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+                className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl hover:border-indigo-500/40 transition-all flex flex-col justify-between group"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-3xl p-3 bg-white dark:bg-slate-950 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">{card.icon}</span>
+                    <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">
+                      {card.badge}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                    {card.title}
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
+                    {card.desc}
+                  </p>
+                </div>
+                <Link
+                  to={card.link}
+                  className="mt-6 inline-flex items-center text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:underline"
+                >
+                  Explore Feature ➔
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Live AI Demo Sandbox Section */}
       <section className="py-24 bg-slate-50 dark:bg-[#07090F] text-slate-900 dark:text-white relative">
         <div className="max-w-[1600px] mx-auto px-6 lg:px-12 relative z-10">
