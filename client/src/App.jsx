@@ -32,6 +32,7 @@ import ResumeAnalyzer from './pages/dashboard/Collaborator/ResumeAnalyzer';
 import AIAssistantPage from './pages/dashboard/Collaborator/AIAssistantPage';
 import LiveCodeSandbox from './pages/dashboard/Collaborator/LiveCodeSandbox';
 import AIVoiceInterviewer from './pages/dashboard/Collaborator/AIVoiceInterviewer';
+import Web3EscrowHub from './pages/dashboard/Web3EscrowHub';
 
 import Bookmarks from './pages/dashboard/Bookmarks';
 import Profile from './pages/dashboard/Profile';
@@ -210,6 +211,14 @@ export default function App() {
       />
 
       {/* Shared Bookmarks & Profile */}
+      <Route
+        path="/dashboard/escrow"
+        element={
+          <PrivateRoute roles={['founder', 'collaborator', 'admin']}>
+            <DashboardLayout allowedRoles={['founder', 'collaborator', 'admin']}><Web3EscrowHub /></DashboardLayout>
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/dashboard/bookmarks"
         element={

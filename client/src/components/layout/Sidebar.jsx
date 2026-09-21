@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import {
   FiHome, FiBriefcase, FiPlusCircle, FiList, FiUsers,
   FiUser, FiDollarSign, FiLogOut, FiShoppingBag, FiChevronLeft, FiChevronRight,
-  FiBookmark, FiFileText, FiMessageCircle, FiTrendingUp, FiActivity, FiStar, FiZap
+  FiBookmark, FiFileText, FiMessageCircle, FiTrendingUp, FiActivity, FiStar, FiZap, FiShield
 } from 'react-icons/fi';
 
 export default function Sidebar() {
@@ -20,6 +20,7 @@ export default function Sidebar() {
     { to: '/dashboard/founder/manage-opportunities', label: t('managePositions'), shortLabel: t('positions'), icon: FiList },
     { to: '/dashboard/founder/applications', label: t('applications'), shortLabel: t('applications'), icon: FiUsers },
     { to: '/dashboard/founder/cap-table', label: 'Cap Table Calculator', shortLabel: 'Cap Table', icon: FiTrendingUp },
+    { to: '/dashboard/escrow', label: 'Web3 Escrow Hub', shortLabel: 'Escrow', icon: FiShield },
     { to: '/dashboard/founder/analytics', label: t('analytics'), shortLabel: t('analytics'), icon: FiActivity },
     { to: '/pricing', label: t('pricing'), shortLabel: t('pricing'), icon: FiStar },
   ];
@@ -31,6 +32,7 @@ export default function Sidebar() {
     { to: '/dashboard/code-sandbox', label: 'Live Code Sandbox', shortLabel: 'Sandbox', icon: FiFileText },
     { to: '/dashboard/ai-interview', label: 'AI Voice Interviewer', shortLabel: 'AI Voice', icon: FiMessageCircle },
     { to: '/dashboard/resume-analyzer', label: t('resumeAnalyzer'), shortLabel: 'Resume', icon: FiFileText },
+    { to: '/dashboard/escrow', label: 'Web3 Escrow Hub', shortLabel: 'Escrow', icon: FiShield },
     { to: '/dashboard/collaborator/applications', label: t('applications'), shortLabel: t('applications'), icon: FiList },
     { to: '/dashboard/bookmarks', label: t('bookmarks'), shortLabel: t('bookmarks'), icon: FiBookmark },
   ];
