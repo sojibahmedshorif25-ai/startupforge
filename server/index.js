@@ -1,3 +1,5 @@
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -98,14 +100,48 @@ app.use('/notifications', notificationRoutes);
 app.use('/network', networkRoutes);
 app.use('/community', communityRoutes);
 
-
 app.use(errorHandler);
+
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+  },
+});
+
+io.on('connection', (socket) => {
+  socket.on('join_room', (roomId) => {
+    socket.join(roomId);
+  });
+
+  socket.on('send_message', (data) => {
+    socket.to(data.roomId).emit('receive_message', data);
+  });
+
+  // WebRTC Video Call Signaling
+  socket.on('call_user', ({ roomId, offer, callerName }) => {
+    socket.to(roomId).emit('incoming_call', { offer, callerId: socket.id, callerName });
+  });
+
+  socket.on('answer_call', ({ roomId, answer }) => {
+    socket.to(roomId).emit('call_accepted', { answer });
+  });
+
+  socket.on('ice_candidate', ({ roomId, candidate }) => {
+    socket.to(roomId).emit('ice_candidate', { candidate });
+  });
+
+  socket.on('end_call', ({ roomId }) => {
+    socket.to(roomId).emit('call_ended');
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 
 const start = async () => {
   console.log('========================================');
-  console.log(`  Starting StartupForge API Server`);
+  console.log(`  Starting StartupForge API Server & Socket.IO`);
   console.log(`  Port: ${PORT}`);
   console.log(`  Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`  MongoDB URI: ${process.env.MONGODB_URI ? '✓ configured' : '✗ not configured'}`);
@@ -113,7 +149,7 @@ const start = async () => {
   console.log('========================================');
 
   await connectDB();
-  app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+  httpServer.listen(PORT, () => console.log(`✅ Server & Socket.IO running on port ${PORT}`));
 };
 
 start();
